@@ -69,8 +69,8 @@ export default {
   name: 'Game',
   props: [],
   mounted () {
-    console.log('adaptador');
     var localVideo = document.getElementById('local');
+    //SOCKETS PARA INICIAR LA VIDEOLLAMADA
     this.socket.on('preparado',()=>{
       this.pc = new RTCPeerConnection(this.pcConf);
       this.pc.addStream(localVideo.srcObject);
@@ -111,6 +111,7 @@ export default {
     this.socket.on('answer', (description)=>{
       this.pc.setRemoteDescription(description);
     });
+    //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
       console.log('comenzar partida');
       this.partida = datos;
