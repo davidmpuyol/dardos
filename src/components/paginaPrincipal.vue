@@ -1,39 +1,6 @@
 <template lang="html">
 
   <main>
-      <!-- Nav tabs -->
-      <nav class="navbar navbar-expand-sm navbar-dark">
-          <a class="navbar-brand" href="#">Logo</a>
-          <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
-              aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="collapsibleNavId">
-              <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                  <li class="nav-item active">
-                      <a class="nav-link" href="#">Inicio <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item active">
-                    <a class="nav-link" href="./directos.html">En Directo</a>
-                  </li>
-                  <li class="nav-item active">
-                    <a class="nav-link" href="#">Torneos</a>
-                  </li>
-              </ul>
-              <div id="navuser" class="d-flex">
-                <!-- <img src="img/p3.jpg" class="mr-1 imgUser">
-                <div class="d-flex flex-column justify-content-between">
-                  <p id="usernameNav" class="m-0 texto-claro text-center">Ejemplo User</p>
-                  <div id="botones">
-                    <button class="b-0 btn btn-dark">Perfil</button>
-                    <button class="b-0 btn btn-dark">Logout</button>
-                  </div>
-                </div> -->
-                <button type="button" data-toggle="modal" data-target=".modal-login" class="b-0 btn btn-dark" id="abrirLogin">Login</button>
-                <button type="button" data-toggle="modal" data-target=".modal-registro" class="b-0 btn btn-dark" id="abrirRegistro">Registrarse</button>
-              </div>
-          </div>
-      </nav>
       <main class="container-fluid">
         <h1 id="tituloChat">Chat General</h1>
         <section id="chat" class="d-flex">
@@ -126,106 +93,108 @@
   import io from 'socket.io-client';
   export default  {
     name: 'pagina-principal',
-    props: [],
+    props: ['conexion'],
     mounted () {
-      this.usr=prompt("Introduce tu nombre")
-      var socket = io('localhost:3000');
-      //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
-      socket.emit('userConected',this.usr)
-      socket.on('user',(msg)=>{
-          console.log(msg)
-      });
-      socket.on('reenvio',(msg)=>{
-          //si el mensaje que recibe va a la misma room a la que se esta observando, lo añade a la lista y despues lo añade al registro de mensajes
-          //del usuario que lo ha enviado
-          console.log('llegan los mensajes'+msg)
-          console.log(msg.userDest+'------'+this.roomActual)
-          //Si el usuario que manda el mensaje esta puesto en el foco del chat y la room a la que va no es la general se mostrara en el chat privado
-          if((msg.userDest == this.roomActual || msg.usr == this.roomActual) && msg.usr != this.usr)
-              this.mostrarMensaje(msg,false)
-          //Si el mensaje no va a la room general lo introduce en el array del usuario emisor
-          if(msg.usr != this.usr){
-            if(msg.dest != 'general'){
-                if(!this.chat[msg.usr])
-                    this.chat[msg.usr] = []
-                this.chat[msg.usr].push(msg)
-            }else{
-                if(!this.chat['general'])
-                    this.chat['general'] = []
-                this.chat['general'].push(msg)
-            }
-          }
-      })
-      socket.on('listaUsuarios',(listaUsuarios)=>{
-          //Si la lista de usuarios del cliente esta vacia, la llena y crea un elemento en la lista por cada uno de ellos
-          if(!this.usuarios){
-              this.usuarios = listaUsuarios
-              Object.keys(this.usuarios).forEach((clave)=>{
-                  if(clave != this.usr){
-                      this.anadirUsuarios(clave,socket)
-                  }
-              })
-          }
-          //Por cada elemento que falte en la lista lo añade.
-          Object.keys(listaUsuarios).forEach(clave => {
-              if(!Object.keys(this.usuarios).includes(clave)){
-                  if(clave != this.usr){
-                      this.usuarios[clave] = listaUsuarios[clave]
-                      this.anadirUsuarios(clave,socket)
-                  }
+        this.usr=prompt("Introduce tu nombre")
+        //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
+        this.socket.emit('userConected',this.usr)
+        this.socket.on('user',(msg)=>{
+            console.log(msg)
+        });
+      this.socket.on('reenvio',(msg)=>{
+            //si el mensaje que recibe va a la misma room a la que se esta observando, lo añade a la lista y despues lo añade al registro de mensajes
+            //del usuario que lo ha enviado
+            console.log('llegan los mensajes'+msg)
+            console.log(msg.userDest+'------'+this.roomActual)
+            //Si el usuario que manda el mensaje esta puesto en el foco del chat y la room a la que va no es la general se mostrara en el chat privado
+            if(msg.dest == this.roomActual && msg.usr != this.usr)
+                  this.mostrarMensaje(msg,false)
+            else
+              if(msg.usr == this.roomActual && msg.userDest == this.usr && msg.dest != 'general')
+                this.mostrarMensaje(msg,false)
+            //Si el mensaje no va a la room general lo introduce en el array del usuario emisor
+            if(msg.usr != this.usr){
+              if(msg.dest != 'general'){
+                  if(!this.chat[msg.usr])
+                      this.chat[msg.usr] = []
+                  this.chat[msg.usr].push(msg)
+              }else{
+                  if(!this.chat['general'])
+                      this.chat['general'] = []
+                  this.chat['general'].push(msg)
               }
-          })
-      })
-      //socket.on('checked',clave){}
-      //Por cada usuario que se ha desconectado, lo elimina de la lista.
-      socket.on('usuarioDesc',(usuarioDesc) => {
-          usuarioDesc.forEach((usuario) => {
-              delete this.usuarios[usuario]
-              $('#'+usuario).remove()
-          })
-      })
-      socket.on('menPriv',(msg)=>{
-          console.log(msg)
-      })
-      //Cada vez que un usuario le da click a su chequed, manda un evento para que se cambie en los otros clientes
-      socket.on('cambEstado',(clave) => {
-          this.usuarios[clave].ready = !this.usuarios[clave].ready
-          let checkbox = $('#'+clave).find('input')[0]
-          $(checkbox).attr("checked",this.usuarios[clave].ready)
-      })
-      $('#enviar').click(()=>{this.enviarMensaje(socket)})
-      $('#textInput').keypress((event) => {
-          if(event.keyCode == '13')
-            this.enviarMensaje(socket)
-      })
-      $('.carouselTorneos').slick({
-        dots: true,
-        infinite: false,
-        speed: 300,
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        adaptiveHeight: true,
-        responsive: [
-          {
-            breakpoint: 600,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 2
             }
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1
+        })
+        this.socket.on('listaUsuarios',(listaUsuarios)=>{
+            //Si la lista de usuarios del cliente esta vacia, la llena y crea un elemento en la lista por cada uno de ellos
+            if(!this.usuarios){
+                this.usuarios = listaUsuarios
+                Object.keys(this.usuarios).forEach((clave)=>{
+                    if(clave != this.usr){
+                        this.anadirUsuarios(clave,this.socket)
+                    }
+                })
             }
-          }
-          // You can unslick at a given breakpoint now by adding:
-          // settings: "unslick"
-          // instead of a settings object
-        ]
-      });
-      this.inicializarUsuario(this.usr,socket)
+            //Por cada elemento que falte en la lista lo añade.
+            Object.keys(listaUsuarios).forEach(clave => {
+                if(!Object.keys(this.usuarios).includes(clave)){
+                    if(clave != this.usr){
+                        this.usuarios[clave] = listaUsuarios[clave]
+                        this.anadirUsuarios(clave,this.socket)
+                    }
+                }
+            })
+        })
+        //socket.on('checked',clave){}
+        //Por cada usuario que se ha desconectado, lo elimina de la lista.
+        this.socket.on('usuarioDesc',(usuarioDesc) => {
+            usuarioDesc.forEach((usuario) => {
+                delete this.usuarios[usuario]
+                $('#'+usuario).remove()
+            })
+        })
+        this.socket.on('menPriv',(msg)=>{
+            console.log(msg)
+        })
+        //Cada vez que un usuario le da click a su chequed, manda un evento para que se cambie en los otros clientes
+        this.socket.on('cambEstado',(clave) => {
+            this.usuarios[clave].ready = !this.usuarios[clave].ready
+            let checkbox = $('#'+clave).find('input')[0]
+            $(checkbox).attr("checked",this.usuarios[clave].ready)
+        })
+        $('#enviar').click(()=>{this.enviarMensaje(this.socket)})
+        $('#textInput').keypress((event) => {
+            if(event.keyCode == '13')
+              this.enviarMensaje(this.socket)
+        })
+        $('.carouselTorneos').slick({
+          dots: true,
+          infinite: false,
+          speed: 300,
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          adaptiveHeight: true,
+          responsive: [
+            {
+              breakpoint: 600,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2
+              }
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1
+              }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+          ]
+        });
+        this.inicializarUsuario(this.usr,this.socket)
       },
     data () {
       return {
@@ -233,7 +202,11 @@
         usr: '',
         roomActual: 'general',
         usuarios: null,
+        socket : this.conexion,
       }
+    },
+    updated() {
+      console.log(this.conexion);
     },
     methods: {
       mostrarMensaje: function(msg,mensajePropio){

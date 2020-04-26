@@ -1,19 +1,52 @@
 <template>
-  <directos></directos>
+    <main>
+        <nav1 v-on:loggeado="this.logearse"></nav1>
+        <section v-if="this.logged">
+            <pagina-principal :conexion='this.socket'></pagina-principal>
+        </section>
+        <section v-else>
+            <h2 class="text-center">{{this.mensajeError}}</h2>
+        </section>
+    </main>
 </template>
 
 <script>
 //import Game from './components/Game.vue'
 import paginaPrincipal from './components/paginaPrincipal.vue'
-import directos from './components/directos.vue'
+import nav1 from './components/nav.vue'
 import JQuery from 'jquery'
   let $ = JQuery
+import io from 'socket.io-client';
 export default {
   name: 'App',
   components: {
     paginaPrincipal,
-    directos
-  }
+    nav1
+  }, 
+    mounted () {
+    if(!this.logged)
+       this.mensajeError = 'Tienes que estar loggeado'
+    },
+    updated() {
+        
+    },
+    data () {
+        return {
+            logged : false,
+            socket : null,
+            mensajeError: '',
+        }
+    },
+    methods: {
+        logearse: function(logged){
+            this.logged = logged
+            this.socket = io('localhost:3000')
+            console.log(this.socket)
+        },
+    },
+    computed: {
+
+    }
 }
 </script>
 
