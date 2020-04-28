@@ -1,8 +1,8 @@
 <template>
     <main>
-        <nav1 v-on:loggeado="this.logearse"></nav1>
+        <nav1 v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :logged='this.logged'></nav1>
         <section v-if="this.logged">
-            <pagina-principal :conexion='this.socket'></pagina-principal>
+            <pagina-principal :conexion='this.socket' :user='this.user'></pagina-principal>
         </section>
         <section v-else>
             <h2 class="text-center">{{this.mensajeError}}</h2>
@@ -15,7 +15,7 @@
 import paginaPrincipal from './components/paginaPrincipal.vue'
 import nav1 from './components/nav.vue'
 import JQuery from 'jquery'
-  let $ = JQuery
+let $ = JQuery
 import io from 'socket.io-client';
 export default {
   name: 'App',
@@ -24,6 +24,19 @@ export default {
     nav1
   }, 
     mounted () {
+    this.socket.on('respLogin',(respuesta)=>{
+        //cuando recibe respuesta del login guarda la session en el sessionStorage para poder loguearse de vuelta si recarga la pagina
+        console.log(respuesta)
+            if(respuesta){
+                sessionStorage.id = respuesta.idSession
+                this.user = respuesta
+                this.logged = true;
+            }
+    })
+    if(sessionStorage.id){
+        //Si existe un id guardado comprueba que la sesion con ese id este iniciada
+        this.socket.emit('comprobarSesion',sessionStorage.id)
+    }
     if(!this.logged)
        this.mensajeError = 'Tienes que estar loggeado'
     },
@@ -33,16 +46,22 @@ export default {
     data () {
         return {
             logged : false,
-            socket : null,
+            socket : io('localhost:3000'),
             mensajeError: '',
+            user: {nick:'Ejemplo Nick'},
         }
     },
     methods: {
-        logearse: function(logged){
-            this.logged = logged
-            this.socket = io('localhost:3000')
-            console.log(this.socket)
+        logueado: function(resp){
+            this.logged = resp.logged
+            this.user = resp.user
         },
+        logout: function(){
+            //Envia al servidor la orden de desloguear al usuario de la bd y borra el id de la session y pone el boolean de logged a false
+            this.socket.emit('logout',sessionStorage.id)
+            this.logged = false,
+            sessionStorage.removeItem('id')
+        }
     },
     computed: {
 

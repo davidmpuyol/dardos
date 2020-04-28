@@ -43,45 +43,6 @@
             <div class="torneoC" id="torneo4"></div>
           </div>
         </section>
-        <div class="modal fade modal-login" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content p-2">
-              <div class="modal-header mb-2">
-                <h1 class="modal-title">Login</h1>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
-              </div>
-              <div class="modal-body">
-                <form action="" method="post" onSubmit="login(); return false">
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" placeholder="Introduce tu email">
-                    <small id="emailHelp" class="form-text text-muted">No compartiremos tu Email con nadie.</small>
-                  </div>
-                  <div class="form-group">
-                    <label for="passw">Contraseña</label>
-                    <input type="password" class="form-control" id="passw" name="passw" placeholder="Contraseña">
-                  </div>
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="terminos">
-                    <label class="form-check-label" for="terminos">Terminos y condiciones</label>
-                  </div>
-                  <div class="d-flex align-items-center justify-content-between">
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                    <div class="spinner-border text-primary" style="display: none;" role="status" id="botonCarga">
-                      <span class="sr-only">Loading...</span>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade modal-registro" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-            </div>
-          </div>
-        </div>
       </main>
   </main>
 
@@ -93,9 +54,9 @@
   import io from 'socket.io-client';
   export default  {
     name: 'pagina-principal',
-    props: ['conexion'],
+    props: ['conexion','user'],
     mounted () {
-        this.usr=prompt("Introduce tu nombre")
+        this.usr=this.user.nick
         //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
         this.socket.emit('userConected',this.usr)
         this.socket.on('user',(msg)=>{
