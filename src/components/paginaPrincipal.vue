@@ -43,6 +43,40 @@
             <div class="torneoC" id="torneo4"></div>
           </div>
         </section>
+        <div class="modal fade modal-invitar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content p-2">
+              <div class="modal-header mb-2">
+                <h1 class="modal-title">{{ jugadorInvitar }}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+              </div>
+              <div class="modal-body">
+                <h3 class="text-center">{{ textoInvitar }}</h3>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <button @click="invitar()" class="btn btn-primary" id="botonInvitar">Invitar</button>
+                    <button @click="jugar()" class="btn btn-success" id="botonJugar" style="display:none">Jugar</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade modal-invitado" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content p-2">
+              <div class="modal-header mb-2">
+                <h1 class="modal-title">{{ jugadorInvitar }}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+              </div>
+              <div class="modal-body">
+                <h3 class="text-center">{{ textoInvitado }}</h3>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <button @click="aceptarInvitacion()" class="btn btn-success">Aceptar</button>
+                    <button @click="rechazarInvitacion()" class="btn btn-danger">Rechazar</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
   </main>
 
@@ -123,6 +157,12 @@
             let checkbox = $('#'+clave).find('input')[0]
             $(checkbox).attr("checked",this.usuarios[clave].ready)
         })
+        this.socket.on('invitacion',(usuario)=>{
+          this.invitado(usuario);
+        })
+        this.socket.on('invitacionAceptada', (usuario)=>{
+          this.invitacionAceptada(usuario);
+        })
         $('#enviar').click(()=>{this.enviarMensaje(this.socket)})
         $('#textInput').keypress((event) => {
             if(event.keyCode == '13')
@@ -164,6 +204,9 @@
         roomActual: 'general',
         usuarios: null,
         socket : this.conexion,
+        jugadorInvitar: null,
+        textoInvitar: null,
+        textoInvitado: null,
       }
     },
     updated() {
@@ -252,6 +295,12 @@
           let botonInv = $('<button>')
           $(botonInv).addClass('b-0 btn btn-dark')
           $(botonInv).text('Invitar')
+          $(botonInv).attr('data-toggle', "modal");
+          $(botonInv).attr('data-target', ".modal-invitar")
+          $(botonInv).click(()=>{
+            this.jugadorInvitar = clave;
+            this.textoInvitar = "¿Quieres invitar a "+clave+"?";
+          })
           let botonPerf = $('<button>')
           $(botonPerf).addClass('b-0 btn btn-dark')
           $(botonPerf).text('Perfil')
@@ -264,6 +313,41 @@
           $(contenedorUsuario).append(contenedorBotones)
           $('#usuarios').append(contenedorUsuario)
       },
+      invitar: function(){
+        console.log(this.jugadorInvitar);
+        console.log(this.usr);
+        this.socket.emit('invitar',this.jugadorInvitar,this.usr);
+        this.textoInvitar = "Invitado, esperando respuesta";
+        $('#botonInvitar').hide();
+      },
+      invitado: function(usuario){
+        this.jugadorInvitar = usuario;
+        this.textoInvitado = usuario + " quiere jugar contigo";
+        $('.modal-invitado').modal('show');
+      },
+      aceptarInvitacion: function(){
+        this.socket.emit('aceptarInvitacion',this.jugadorInvitar, this.usr);
+        $('.modal-invitado').modal('hide');
+        console.log(this.jugadorInvitar)
+        let routeData = this.$router.resolve({path: '/game', query: {contrincante: this.jugadorInvitar}});
+        window.open(routeData.href, '_blank');
+      },
+      rechazarInvitacion: function(){
+        this.socket.emit('rechazarInvitacion',this.jugadorInvitar, this.usr);
+        $('.modal-invitado').modal('hide');
+      },
+      invitacionAceptada: function(usuario){
+        $('.modal-invitar').modal('show');
+        this.jugadorInvitar = usuario;
+        this.textoInvitado = usuario+" ha aceptado la partida!";
+        $('#botonJugar').show();
+      },
+      jugar: function(){
+        $('.modal-invitar').modal('hide');
+        console.log(this.jugadorInvitar);
+        let routeData = this.$router.resolve({path: '/game', query: {contrincante: this.jugadorInvitar}});
+        window.open(routeData.href, '_blank');
+      }
     },
     computed: {
 

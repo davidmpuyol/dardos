@@ -67,17 +67,22 @@ import io from 'socket.io-client';
 import adapter from 'webrtc-adapter';
 export default {
   name: 'Game',
-  props: [],
+  props: ['conexion','user'],
   mounted () {
+    this.socket.emit('paginaJuego', )
+    console.log(this.$route.query.contrincante);
+    this.contrincante = this.$route.query.contrincante;
     var localVideo = document.getElementById('local');
     //SOCKETS PARA INICIAR LA VIDEOLLAMADA
     this.socket.on('preparado',()=>{
+      console.log('preparado recibido');
       this.pc = new RTCPeerConnection(this.pcConf);
       this.pc.addStream(localVideo.srcObject);
       this.pc.createOffer()
       .then(offer => this.pc.setLocalDescription(offer))
       .then(()=>{
-        this.socket.emit('offer',this.pc.localDescription);
+        console.log('offer');
+        this.socket.emit('offer',this.pc.localDescription,this.contrincante);
       })
       this.pc.ontrack = (event) => {
         document.getElementById('remote').srcObject = event.streams[0];
@@ -91,14 +96,14 @@ export default {
       .then(() => this.pc.createAnswer())
       .then(sdp => this.pc.setLocalDescription(sdp))
       .then(()=>{
-        this.socket.emit('answer', this.pc.localDescription);
+        this.socket.emit('answer', this.pc.localDescription,contrincante);
       });
       this.pc.ontrack = (event) => {
         document.getElementById('remote').srcObject = event.streams[0];
       }
       this.pc.onicecandidate = (event) =>{
         if (event.candidate) {
-          this.socket.emit('candidate', event.candidate);
+          this.socket.emit('candidate', event.candidate,contrincante);
         }
       };
       this.id="visitante";
@@ -106,10 +111,10 @@ export default {
     this.socket.on('candidate', (candidate)=>{
       this.pc.addIceCandidate(new RTCIceCandidate(candidate))
       .catch(e => console.error(e));
-      this.socket.emit('comenzarPartida');
     });
     this.socket.on('answer', (description)=>{
       this.pc.setRemoteDescription(description);
+      this.socket.emit('comenzarPartida');
     });
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
@@ -132,9 +137,10 @@ export default {
   },
   data () {
     return {
-      socket: io(),
+      socket: this.conexion,
       //socket: io('http://localhost:3000'),
       pc: null,
+      contrincante: null,
       partida: {
         local: {
           puntos: 501,
@@ -170,7 +176,8 @@ export default {
     enviarPuntuacion(){
       let datos = {
         puntos: parseInt(this.input),
-        dardos: 3
+        dardos: 3,
+        idPartida: this.partida.idPartida,
       }
       console.log(datos);
       this.socket.emit('tirada',datos);
@@ -193,10 +200,11 @@ export default {
     getUserMediaSuccess(stream){
       let localVideo = document.getElementById('local');
       this.gettingUserMedia = false;
+      //adapter.attachMediaStream(localVideo, stream);
       if (localVideo instanceof HTMLVideoElement) {
         !localVideo.srcObject && (localVideo.srcObject = stream);
       }
-      this.socket.emit('preparado');
+      this.socket.emit('preparado',this.contrincante);
     },
     getUserMediaError(error){
       console.error(error);

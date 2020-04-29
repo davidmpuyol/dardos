@@ -2,7 +2,7 @@
     <main>
         <nav1 v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :logged='this.logged'></nav1>
         <section v-if="this.logged">
-            <pagina-principal :conexion='this.socket' :user='this.user'></pagina-principal>
+            <router-view :conexion='this.socket' :user='this.user'></router-view>
         </section>
         <section v-else>
             <h2 class="text-center">{{this.mensajeError}}</h2>
