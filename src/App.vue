@@ -1,6 +1,6 @@
 <template>
     <main>
-        <nav1 v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :logged='this.logged'></nav1>
+        <nav1 v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
         <section v-if="this.logged">
             <router-view :conexion='this.socket' :user='this.user'></router-view>
         </section>
@@ -31,6 +31,7 @@ export default {
                 sessionStorage.id = respuesta.idSession
                 this.user = respuesta
                 this.logged = true;
+                $(".modal-login").modal('hide')
             }
     })
     if(sessionStorage.id){
@@ -64,7 +65,6 @@ export default {
         }
     },
     computed: {
-
     }
 }
 </script>

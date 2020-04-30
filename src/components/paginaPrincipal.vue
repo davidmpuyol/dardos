@@ -18,9 +18,9 @@
           <div id="usuarios" class="p-3 overflow-auto">
             <div id="usuarioLocal" class="usuarioChat d-flex align-items-center">
               <input id="checkboxLocal" type="checkbox">
-              <img src="../assets/p5.jpg" class="mr-1 imgUser">
+              <img v-bind:src="userImage" class="mr-1 imgUser">
                 <div class="d-flex justify-content-between align-items-center nombreInvitar">
-                  <p id="nombreUserLocal" class="m-0 texto-oscuro text-center">Ejemplo User</p>
+                  <p id="nombreUserLocal" class="m-0 texto-oscuro text-center">{{user.nick}}</p>
                   <div id="botones" class="d-flex flex-column">
                     <button class="b-0 btn btn-dark">Perfil</button>
                   </div>
@@ -32,6 +32,8 @@
                   <p id="usernameNav" class="m-0 texto-oscuro text-center" v-on:click="cambiarRoom('general')">Chat General</p>
                 </div>
             </div>
+            <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
+            </userChat>
           </div>
         </section>
         <h2 class="text-center mt-2 mb-2">Proximos torneos</h2>
@@ -86,13 +88,17 @@
   import JQuery from 'jquery'
   let $ = JQuery
   import io from 'socket.io-client';
+  import userChat from './userChat.vue'
   export default  {
     name: 'pagina-principal',
     props: ['conexion','user'],
+    components:{
+      userChat
+    },    
     mounted () {
         this.usr=this.user.nick
         //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
-        this.socket.emit('userConected',this.usr)
+        this.socket.emit('userConected',this.user)
         this.socket.on('user',(msg)=>{
             console.log(msg)
         });
@@ -123,39 +129,41 @@
         this.socket.on('listaUsuarios',(listaUsuarios)=>{
             //Si la lista de usuarios del cliente esta vacia, la llena y crea un elemento en la lista por cada uno de ellos
             if(!this.usuarios){
-                this.usuarios = listaUsuarios
-                Object.keys(this.usuarios).forEach((clave)=>{
-                    if(clave != this.usr){
-                        this.anadirUsuarios(clave,this.socket)
-                    }
-                })
+              delete(listaUsuarios[this.user.nick])
+              this.usuarios = listaUsuarios
             }
             //Por cada elemento que falte en la lista lo añade.
             Object.keys(listaUsuarios).forEach(clave => {
                 if(!Object.keys(this.usuarios).includes(clave)){
                     if(clave != this.usr){
                         this.usuarios[clave] = listaUsuarios[clave]
-                        this.anadirUsuarios(clave,this.socket)
                     }
                 }
             })
+            this.$forceUpdate()
+            console.log(this.usuarios)
         })
         //socket.on('checked',clave){}
         //Por cada usuario que se ha desconectado, lo elimina de la lista.
         this.socket.on('usuarioDesc',(usuarioDesc) => {
             usuarioDesc.forEach((usuario) => {
                 delete this.usuarios[usuario]
-                $('#'+usuario).remove()
             })
+            this.$forceUpdate()
         })
         this.socket.on('menPriv',(msg)=>{
             console.log(msg)
         })
         //Cada vez que un usuario le da click a su chequed, manda un evento para que se cambie en los otros clientes
         this.socket.on('cambEstado',(clave) => {
-            this.usuarios[clave].ready = !this.usuarios[clave].ready
-            let checkbox = $('#'+clave).find('input')[0]
-            $(checkbox).attr("checked",this.usuarios[clave].ready)
+        if(clave != this.user.nick)
+          if(this.usuarios[clave]){
+            let estado = !this.usuarios[clave].ready
+            delete this.usuarios[clave].ready
+            this.$set(this.usuarios[clave],"ready",estado)
+            console.log(this.usuarios)
+          }
+          this.$forceUpdate()
         })
         this.socket.on('invitacion',(usuario)=>{
           this.invitado(usuario);
@@ -228,10 +236,8 @@
       inicializarUsuario: function(nombre,socket){
           //inicializa el primer usuario de la lista con el usuario logeado
           $('#checkboxLocal').click(()=>{
-              this.usuarios[nombre].ready = !this.usuarios[nombre].ready;
               socket.emit('checked',nombre);
           })
-          $('#nombreUserLocal').text(nombre);
       },
       enviarMensaje: function(socket){
           if ($('#textInput').val() != ''){
@@ -244,7 +250,7 @@
               } else {
                   destino = this.usuarios[this.roomActual].id
               }
-              let msgChat = {'usr':this.usr,'id':this.usuarios[this.usr].id,'msg':mensaje,'dest':destino,'userDest':this.roomActual,}
+              let msgChat = {'usr':this.usr,'id':this.socket.id,'msg':mensaje,'dest':destino,'userDest':this.roomActual,}
               socket.emit("mensaje",msgChat)
               if(!this.chat[msgChat.userDest])
                   this.chat[msgChat.userDest] = []
@@ -254,6 +260,7 @@
       },
       cambiarRoom: function(clave){
           //cambia la room actual por la correspondiente y carga los mensajes guardados.
+          console.log(clave)
           if(clave == 'general')
               $('#tituloChat').text('Chat General')
           else
@@ -268,7 +275,7 @@
                     this.mostrarMensaje(msg,false)
               })
       },
-      anadirUsuarios: function(clave,socket){
+      /*anadirUsuarios: function(clave,socket){
           //Crea el elemento de la lista que hace referencia a ese usuario
           let contenedorUsuario = $('<div>')
           $(contenedorUsuario).addClass('usuarioChat d-flex align-items-center')
@@ -312,6 +319,12 @@
           $(contenedorUsuario).append(image)
           $(contenedorUsuario).append(contenedorBotones)
           $('#usuarios').append(contenedorUsuario)
+      },*/
+      prepInvitar(clave){
+        console.log("llega a metodo prep")
+        this.jugadorInvitar = clave;
+        this.textoInvitar = "¿Quieres invitar a "+clave+"?";
+        $(".modal-invitar").modal("show")
       },
       invitar: function(){
         console.log(this.jugadorInvitar);
@@ -350,7 +363,10 @@
       }
     },
     computed: {
-
+      userImage:function(){
+            //Crea la url de la imagen del usuario
+            return "http://localhost:3000/usersIcon/"+this.user.img
+        }
     }
 }
 
