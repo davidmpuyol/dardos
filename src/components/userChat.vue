@@ -26,8 +26,7 @@
     },
     data () {
       return {
-        nombre : this.nick,
-        listo : this.ready
+        nombre : this.nick
       }
     },
     methods: {
@@ -44,6 +43,9 @@
       userImage:function(){
           //Crea la url de la imagen del usuario
           return "http://localhost:3000/usersIcon/"+this.img
+      },
+      listo:function(){
+        return this.ready
       }
     }
 }

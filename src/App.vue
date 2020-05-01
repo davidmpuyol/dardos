@@ -70,6 +70,9 @@ export default {
 </script>
 
 <style>
+*{
+    box-sizing: border-box;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -86,8 +89,8 @@ li p {
     word-wrap: break-word;
   }
 .imgUser{
-    height: 64px;
-    width: 64px;
+    height: 64px !important;
+    width: 64px !important;
 }
 #usuarios{
     -webkit-box-shadow: inset 0px 11px 37px 0px rgba(0,0,0,0.75);
@@ -288,5 +291,6 @@ nav li a{
 #controlesChatStream{
     height: 5%;
 }
+
 
 </style>

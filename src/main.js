@@ -13,6 +13,8 @@ import VueRouter from 'vue-router'
 window.$ = JQuery
 import paginaPrincipal from './components/paginaPrincipal.vue'
 import Game from './components/Game.vue'
+import torneos from './components/torneos.vue'
+import directos from './components/directos.vue'
 
 var $ = require('jquery');
 window.$ = $;
@@ -23,7 +25,9 @@ Vue.use(VueMaterial)
 
 const routes = [
   { path: '/', component: paginaPrincipal },
-  { path: '/game', component: Game, props: true }
+  { path: '/game', component: Game, props: true },
+  { path: '/torneos', component: torneos},
+  { path: '/directos', component: directos}
 ]
 
 const router = new VueRouter({

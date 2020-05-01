@@ -2,7 +2,7 @@
 
   <main>
       <main class="container-fluid">
-        <h1 id="tituloChat">Chat General</h1>
+        <h1 id="tituloChat" class="mt-1 mb-1">Chat General</h1>
         <section id="chat" class="d-flex">
           <div id="mensajes">
             <div id="mensajesChat" class="overflow-auto">
@@ -96,6 +96,7 @@
       userChat
     },    
     mounted () {
+      console.log('se monta')
         this.usr=this.user.nick
         //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
         this.socket.emit('userConected',this.user)

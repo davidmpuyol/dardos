@@ -9,13 +9,13 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="./index.html">Inicio <span class="sr-only">(current)</span></a>
+                    <router-link to="/" class="nav-link">Inicio <span class="sr-only">(current)</span></router-link>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">En Directo</a>
+                  <router-link to="/directos" class="nav-link" >En Directo</router-link>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">Torneos</a>
+                  <router-link to="/torneos" class="nav-link">Torneos</router-link>
                 </li>
             </ul>
             <div id="navuser" class="d-flex" v-if="this.logged">
@@ -175,5 +175,12 @@
 <style scoped lang="css">
   .nav {
 
+  }
+  .nav-link:hover{
+    text-decoration: none;
+    transition: 0.2s;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    border-radius: 20%;
   }
 </style>
