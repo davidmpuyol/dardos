@@ -23,7 +23,7 @@
               <div class="d-flex flex-column justify-content-between">
                 <p id="usernameNav" class="m-0 texto-claro text-center">{{this.nick}}</p>
                 <div id="botones">
-                  <button class="b-0 btn btn-dark">Perfil</button>
+                  <button class="b-0 btn btn-dark" @click="$router.push({ path: `/perfil/${nick}` })">Perfil</button>
                   <button class="b-0 btn btn-dark" @click='this.logout'>Logout</button>
                 </div>
               </div>

@@ -6,7 +6,7 @@
       <p class="m-0 texto-oscuro text-center" @click="this.cambiarRoom">{{nick}}</p>
       <div class="d-flex flex-column">
         <button class="b-0 btn btn-dark" @click="this.invitarJugador" >Invitar</button>
-        <button class="b-0 btn btn-dark">Perfil</button>
+        <button class="b-0 btn btn-dark" @click="$router.push({ path: `/perfil/${nick}` })">Perfil</button>
       </div>
     </div>
   </div>

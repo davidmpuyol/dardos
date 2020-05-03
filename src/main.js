@@ -15,6 +15,7 @@ import paginaPrincipal from './components/paginaPrincipal.vue'
 import Game from './components/Game.vue'
 import torneos from './components/torneos.vue'
 import directos from './components/directos.vue'
+import perfil from './components/perfil.vue'
 
 var $ = require('jquery');
 window.$ = $;
@@ -27,7 +28,8 @@ const routes = [
   { path: '/', component: paginaPrincipal },
   { path: '/game', component: Game, props: true },
   { path: '/torneos', component: torneos},
-  { path: '/directos', component: directos}
+  { path: '/directos', component: directos},
+  { path: '/perfil/:nick', component: perfil, props: true},
 ]
 
 const router = new VueRouter({
