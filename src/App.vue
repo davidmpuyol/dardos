@@ -1,6 +1,6 @@
 <template>
     <main>
-        <nav1 v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
+        <nav1 v-if="this.fueraJuego" v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
         <section v-if="this.logged">
             <router-view :conexion='this.socket' :user='this.user'></router-view>
         </section>
@@ -65,6 +65,9 @@ export default {
         }
     },
     computed: {
+        fueraJuego: function(){
+            return this.$route.path != "/game"
+        }
     }
 }
 </script>

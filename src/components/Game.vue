@@ -69,8 +69,8 @@ export default {
   name: 'Game',
   props: ['conexion','user'],
   mounted () {
-    this.socket.emit('paginaJuego', )
-    console.log(this.$route.query.contrincante);
+    console.log(this.$route)
+    this.socket.emit('paginaJuego', this.$route.query.id);
     this.contrincante = this.$route.query.contrincante;
     var localVideo = document.getElementById('local');
     //SOCKETS PARA INICIAR LA VIDEOLLAMADA
@@ -134,6 +134,7 @@ export default {
       }
     })
     this.getUserMediaDevices();
+    //this.socket.emit('preparado',this.contrincante);
   },
   data () {
     return {
@@ -166,7 +167,9 @@ export default {
       },
       pcConf: {
         'iceServers': [{
-          'urls': ['stun:stun.l.google.com:19302']
+          urls: "turn:168.63.17.113:3478",
+          username: "davidmpuyol",
+          credential: "davidmpuyol"
         }]
       },
       gettingUserMedia: false
