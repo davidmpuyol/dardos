@@ -104,7 +104,7 @@ box-shadow: inset 0px 11px 37px 0px rgba(0,0,0,0.75);
     width: 70px;
 }
 #mensajesChat{
-    height: 90.6%;
+    height: 70vh;
 }
 .nombreInvitar{
     width: 90%;
@@ -112,9 +112,7 @@ box-shadow: inset 0px 11px 37px 0px rgba(0,0,0,0.75);
 #controlesChat{
     height: 9.4%;
 }
-nav{
-    background-color:  #30323d;
-}
+
 h1,h2,h3,h4,h5,h6{
     font-family: 'Anton', sans-serif;
 }
@@ -152,7 +150,7 @@ nav li a{
     padding: 0;
 }
 #listaMensajes li{
-    background-color:  #8f857d;
+    background-color:  #8f857d71;
 
 }
 .texto-oscuro{
@@ -163,23 +161,38 @@ nav li a{
 }
 #mensajes{
     height: 100%;
-    width: 60vw;
-    border-right: #1c2321 solid 1px;
-    background-color: #decbb7;
+    border-right: #1c23217c solid 1px;
+    background-color: #BABFD1;
 }
 #usuarios{
-    width: 40vw;
-    height: 100%;
-    border-left: #1c2321 solid 1px;
-    margin-left: 1vh;
+    height: 73.2vh;
+    border-left: #1c23217c solid 1px;
 }
+.sombra{
+    -webkit-box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
+  }
+  .sombraInsetComp{
+      -webkit-box-shadow: inset 0px 0px 13px 5px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 13px 5px rgba(0,0,0,0.75);
+    box-shadow: inset 0px 0px 13px 5px rgba(0,0,0,0.75);
+  }
+  .sombraInsetDif{
+    -webkit-box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
+    box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
+  }
 #chat{
-    height: 70vh;
-    border: #1c2321 solid 1px;
+    border: #1c23217c solid 1px;
 }
 .carouselTorneos{
     height: 20vh;
 }
+.nombreUserLista{
+    font-size: 1.5em;
+    font-weight: bold;
+  }
 .torneoC{
     height: 20vh !important;
     margin: 5px;
@@ -220,9 +233,6 @@ nav li a{
     align-items: center;
     justify-content: center;
 }
-.usuarioChat{
-    border-bottom: black solid 2px;
-}
 #enviar{
     background-color:#e0fbfc ;
 }
@@ -232,8 +242,8 @@ nav li a{
     box-sizing: border-box;
     margin: 1em;
     padding: 1em 2em;
-    box-shadow: inset 0 0 0 1px #30323d;
-    color: black;
+    box-shadow: inset 0 0 0 1px #30323d59;
+    color: #30323d;
     font-size: inherit;
     font-weight: 700;
     position: relative;

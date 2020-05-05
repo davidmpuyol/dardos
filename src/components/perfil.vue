@@ -94,16 +94,6 @@
     height: 100%;
     width: 100%;
   }
-  .sombra{
-    -webkit-box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
-    box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
-  }
-  .sombraInset{
-    -webkit-box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
-    box-shadow: inset -2px 1px 73px -17px rgba(0,0,0,0.75);
-  }
   .borde-animado-perfil {
     width: 80%;
     height: auto;

@@ -2,9 +2,9 @@
 
   <main>
       <main class="container-fluid">
-        <h1 id="tituloChat" class="mt-1 mb-1">Chat General</h1>
-        <section id="chat" class="d-flex">
-          <div id="mensajes">
+        <h1 id="tituloChat" class="mt-1 mb-1 text-center">Chat General</h1>
+        <section id="chat" class="d-flex row m-1">
+          <div id="mensajes" class="col-12 col-md-7 mb-2 mb-md-0 p-0">
             <div id="mensajesChat" class="overflow-auto">
               <ul id="listaMensajes">
                 <li>Bienvenido al chat general</li>
@@ -15,25 +15,54 @@
               <button id="enviar" class="col-2 center m-0 p-0">Enviar</button>
             </div>
           </div>
-          <div id="usuarios" class="p-3 overflow-auto">
-            <div id="usuarioLocal" class="usuarioChat d-flex align-items-center">
-              <input id="checkboxLocal" type="checkbox">
-              <img v-bind:src="userImage" class="mr-1 imgUser">
-                <div class="d-flex justify-content-between align-items-center nombreInvitar">
-                  <p id="nombreUserLocal" class="m-0 texto-oscuro text-center">{{user.nick}}</p>
-                  <div id="botones" class="d-flex flex-column">
-                    <button class="b-0 btn btn-dark" @click="$router.push({ path: `/perfil/${user.nick}` })">Perfil</button>
+          <div class="col-12 col-md-5 p-0 overflow-auto">
+            <md-list id="usuarios">
+              <md-list-item>
+                <input id="checkboxLocal" type="checkbox" @click="cambiarEstado">
+                <md-avatar class="md-large">
+                  <img v-bind:src="userImage" v-bind:alt="user.nick">
+                </md-avatar>
+
+                <div class="md-list-item-text">
+                  <p class="text-center nombreUserLista">{{user.nick}}</p>
+                </div>
+                <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${nick}` })">
+                  <md-icon>account_circle</md-icon>
+                </md-button>
+              </md-list-item>
+              <md-divider class="md-inset"></md-divider>
+              <!-- <div id="usuarioLocal" class="usuarioChat d-flex align-items-center">
+                <input id="checkboxLocal" type="checkbox">
+                <img v-bind:src="userImage" class="mr-1 imgUser">
+                  <div class="d-flex justify-content-between align-items-center nombreInvitar">
+                    <p id="nombreUserLocal" class="m-0 texto-oscuro text-center"></p>
+                    <div id="botones" class="d-flex flex-column">
+                      <button class="b-0 btn btn-dark" @click="$router.push({ path: `/perfil/${user.nick}` })">Perfil</button>
+                    </div>
                   </div>
+              </div> -->
+              <md-list-item>
+                <md-avatar class="md-large">
+                  <img src="../assets/p5.jpg" alt="General">
+                </md-avatar>
+
+                <div class="md-list-item-text">
+                  <p class="text-center nombreUserLista">Chat General</p>
                 </div>
-            </div>
-            <div id="chatGeneral" class="usuarioChat d-flex align-items-center">
-              <img src="../assets/p5.jpg" class="mr-1 imgUser">
-                <div class="d-flex justify-content-between align-items-center nombreInvitar">
-                  <p id="usernameNav" class="m-0 texto-oscuro text-center" v-on:click="cambiarRoom('general')">Chat General</p>
-                </div>
-            </div>
+                <md-button class="md-icon-button md-list-action"  v-on:click="cambiarRoom('general')">
+                  <md-icon>chat</md-icon>
+                </md-button>
+              </md-list-item>
+              <md-divider class="md-inset"></md-divider>
+              <!-- <div id="chatGeneral" class="usuarioChat d-flex align-items-center">
+                <img src="../assets/p5.jpg" class="mr-1 imgUser">
+                  <div class="d-flex justify-content-between align-items-center nombreInvitar">
+                    <p id="usernameNav" class="m-0 texto-oscuro text-center" v-on:click="cambiarRoom('general')">Chat General</p>
+                  </div>
+              </div> -->
             <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
             </userChat>
+            </md-list>
           </div>
         </section>
         <h2 class="text-center mt-2 mb-2">Proximos torneos</h2>
@@ -159,6 +188,7 @@
         this.socket.on('cambEstado',(clave) => {
         if(clave != this.user.nick)
           if(this.usuarios[clave]){
+            console.log("recibe cambiar")
             let estado = !this.usuarios[clave].ready
             delete this.usuarios[clave].ready
             this.$set(this.usuarios[clave],"ready",estado)
@@ -204,12 +234,12 @@
             // instead of a settings object
           ]
         });
-        this.inicializarUsuario(this.usr,this.socket)
       },
     data () {
       return {
         chat: Object(),
         usr: '',
+        ready: false,
         roomActual: 'general',
         usuarios: null,
         socket : this.conexion,
@@ -234,11 +264,10 @@
               $(mensaje).addClass("mensaje-izquierda");
           $('#listaMensajes').append(mensaje);
       },
-      inicializarUsuario: function(nombre,socket){
+      cambiarEstado: function(){
           //inicializa el primer usuario de la lista con el usuario logeado
-          $('#checkboxLocal').click(()=>{
-              socket.emit('checked',nombre);
-          })
+          console.log("hace cambiar estado")
+          this.conexion.emit('checked',this.user.nick);
       },
       enviarMensaje: function(socket){
           if ($('#textInput').val() != ''){

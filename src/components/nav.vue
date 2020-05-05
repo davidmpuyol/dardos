@@ -1,6 +1,6 @@
 <template lang="html">
   <main>
-    <nav class="navbar navbar-expand-sm navbar-dark">
+    <nav class="navbar navbar-expand-md navbar-dark">
         <a class="navbar-brand" href="#">Logo</a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -9,29 +9,31 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <router-link to="/" class="nav-link">Inicio <span class="sr-only">(current)</span></router-link>
+                    <md-button to="/" class="nav-link">Inicio <span class="sr-only">(current)</span></md-button>
                 </li>
                 <li class="nav-item active">
-                  <router-link to="/directos" class="nav-link" >En Directo</router-link>
+                  <md-button to="/directos" class="nav-link" >En Directo</md-button>
                 </li>
                 <li class="nav-item active">
-                  <router-link to="/torneos" class="nav-link">Torneos</router-link>
+                  <md-button to="/torneos" class="nav-link">Torneos</md-button>
                 </li>
             </ul>
-            <div id="navuser" class="d-flex" v-if="this.logged">
-              <img v-bind:src="userImage" class="mr-1 imgUser">
-              <div class="d-flex flex-column justify-content-between">
-                <p id="usernameNav" class="m-0 texto-claro text-center">{{this.nick}}</p>
-                <div id="botones">
-                  <button class="b-0 btn btn-dark" @click="$router.push({ path: `/perfil/${nick}` })">Perfil</button>
-                  <button class="b-0 btn btn-dark" @click='this.logout'>Logout</button>
+            <section id="navuser" class="sombraInsetComp" v-if="this.logged">
+              <div class="d-flex align-items-center m-2">
+                <img v-bind:src="userImage" class="ml-2 mr-1 imgUser">
+                <div class="d-flex flex-column justify-content-between">
+                  <p id="usernameNav" class="m-0 texto-claro text-center">{{this.nick}}</p>
+                  <div id="botones">
+                    <md-button class="b-0 md-raised" @click="$router.push({ path: `/perfil/${nick}` })">Perfil</md-button>
+                    <md-button class="b-0 md-raised" @click='this.logout'>Logout</md-button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="d-flex" v-else>
-                <button type="button" data-toggle="modal" data-target=".modal-login" class="b-0 btn btn-dark" id="abrirLogin">Login</button>
-                <button type="button" data-toggle="modal" data-target=".modal-registro" class="b-0 btn btn-dark" id="abrirRegistro">Registrarse</button>
-            </div>
+            </section>
+            <section class="d-flex" v-else>
+                <md-button class="md-raised b-0" data-toggle="modal" data-target=".modal-login"  id="abrirLogin">Login</md-button>
+                <md-button class="md-raised b-0" data-toggle="modal" data-target=".modal-registro" id="abrirRegistro">Registrarse</md-button>
+            </section>
         </div>
     </nav>
     <div class="modal fade modal-login" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -176,11 +178,14 @@
   .nav {
 
   }
-  .nav-link:hover{
-    text-decoration: none;
-    transition: 0.2s;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
-    border-radius: 20%;
+  nav{
+    background-color:  #30323d;
+  }
+  #navuser{
+    background-color:rgb(76, 79, 95) ;
+    border-radius: 7px 7px 7px 7px;
+    -moz-border-radius: 7px 7px 7px 7px;
+    -webkit-border-radius: 7px 7px 7px 7px;
+    border: 0px solid #2a2b35;
   }
 </style>
