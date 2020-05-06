@@ -26,7 +26,7 @@
                 <div class="md-list-item-text">
                   <p class="text-center nombreUserLista">{{user.nick}}</p>
                 </div>
-                <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${nick}` })">
+                <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${user.nick}` })">
                   <md-icon>account_circle</md-icon>
                 </md-button>
               </md-list-item>

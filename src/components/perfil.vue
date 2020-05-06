@@ -1,13 +1,13 @@
 <template lang="html">
 
   <section class="perfil">
-    <div v-if="this.cargado" class="row">
-      <section id="datosUser" class="col-4 sombraInset">
+    <div v-if="this.cargado" class="row m-0">
+      <section id="datosUser" class="col-12 col-sm-4 sombraInset d-flex align-items-center flex-column p-0">
         <div id="fotoUser" class="borde-animado-perfil sombra mb-2">
           <img :src="this.userImage" class="imgPerfil">
         </div>
         <h3 class="w-100 text-center">{{ nick }}</h3>
-        <div id="statsResumidas" class="d-flex flex-column">
+        <div id="statsResumidas" class="d-flex flex-column w-75">
           <div id="victoriasStats" class="d-flex align-items-center justify-content-around">
             <img src="http://localhost:3000/imgApp/victorias.png" class="iconosPerfil" title="Victorias">
             <p class="parrafosStats m-0">{{datosUsuario.nVictorias}}</p>
@@ -18,7 +18,7 @@
           </div>
         </div>
       </section>
-      <section id="graficosEstadisticas" class="col-8 overflow-auto">
+      <section id="graficosEstadisticas" class="col-12 col-sm-8 overflow-auto sombraInsetComp p-3">
         <h2 class="text-center">Total partidas jugadas</h2>
         <p class="parrafosStats text-center">{{ datosUsuario.nPartidas }}</p>
         <h2 class="text-center">Ultimas partidas</h2>
@@ -26,7 +26,7 @@
       </section>
     </div>
     <div v-else>
-
+      <p class="text-center">No se encontro el perfil >:( </p>
     </div>
   </section>
 
@@ -44,7 +44,7 @@
         if(respuesta.error){
           this.cargado = false
         } else {
-          this.cargado=true
+          this.cargado = true
         }
       })
       console.log(this.nick)
@@ -75,29 +75,28 @@
 
   }
   .parrafosStats{
-    font-size: 2em;
+    font-size: 4em;
   }
   #datosUser{
-    background-color: #decbb7;
+    background-color: #BABFD1;
     min-height: 89.5vh;
-    border-right: 10px solid #1c2321;
+    border:1px solid rgba(186, 191, 209, 0.507);
   }
   #graficosEstadisticas{
-    background-color: #8f857d;
+    background-color: #e0fbfc;
     min-height: 89.5vh;
   }
   .iconosPerfil{
-    height: auto;
-    width: 25%;
+    height: 80px;
+    width: 80px;
   }
   .imgPerfil{
-    height: 100%;
-    width: 100%;
+    width: 200px;
   }
   .borde-animado-perfil {
-    width: 80%;
-    height: auto;
-    margin: 10%;
+    width: 200px;
+    height: 200px;
+    margin-top: 10%;
     border-width: 15px 15px; /* Ancho de los bordes */
     border-radius: 10px; /* Bordes redondeados */
   }

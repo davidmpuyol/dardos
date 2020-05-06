@@ -200,8 +200,8 @@ nav li a{
     transition: 0.5s;
 }
 .contenedorCarousel{
-    width: 98%;
-    margin-left: 1%;
+    width: 96%;
+    margin-left: 2%;
 }
 .tituloDirecto{
     padding-bottom:0.5em ;
