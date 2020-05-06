@@ -1,59 +1,58 @@
 <template>
   <md-app>
-      <md-app-content id="aplicacion">
-        <div class="md-layout">
-          <div class="md-layout-item md-size-40">
-            <div class="md-layout" id="divPuntos">
-              <div class="md-layout-item md-size-50 h-80">
-                <span class="md-display-4 puntuacion marcador" id="marcador1">{{partida.local.puntos}}</span>
-                <h2 class="md-display-3 marcadorlocal">{{marcador.local}}</h2>
+      <md-app-content>
+        <div class="md-layout d-flex flex-column flex-nowrap justify-content-between" id="aplicacion">
+          <div class="md-layout-item md-size-100">
+            <div class="md-layout h-100">
+              <div v-bind:class="{ sombreado: turno }" class="md-layout-item md-size-40 md-layout">
+                <div class="md-layout md-layout-item md-size-30 d-flex flex-column justify-content-around centrado flex-nowrap">
+                  <span><b>Media: {{partida.local.media}}</b></span>
+                </div>
+                <div class="md-layout-item md-size-70 d-flex flex-column align-items-center justify-content-around">
+                  <span class="md-size-100 centrado">{{ usuario }}</span>
+                  <span class="md-display-3 puntuacion" id="marcador">{{partida.local.puntos}}</span>
+                </div><!--
                 <md-list class="lista">
                   <md-list-item v-for="tirada in partida.local.tiradas" :key="tirada">
                     <div class="md-list-item-text puntuacion md-subheading">
                       {{tirada}}
                     </div>
                   </md-list-item>
-                </md-list>
+                </md-list>-->
               </div>
-              <div class="md-layout-item md-size-50 h-80">
-                <span class="md-display-4 puntuacion marcador">{{partida.visitante.puntos}}</span>
-                <h2 class="md-display-3 marcadorvisitante">{{marcador.visitante}}</h2>
-                <md-list class="lista">
+              <div class="md-layout-item md-size-20 md-layout">
+                <span class="md-layout-item md-size-100 md-display-1 centrado">{{marcador.local}} - {{marcador.visitante}}</span>
+                <div class="md-layout-item md-size-100 md-layout">
+                    <div class="md-layout-item md-size-60 md-small-size-100 divInput">
+                        <input type="text" :disabled="turno" v-on:keyup.enter="enter" v-model="input" id="inputPuntos" placeholder="Introduce tu puntuación" autofocus>
+                    </div>
+                    <div class="md-layout-item md-size-40 md-small-size-100 divInput">
+                      <md-button @click="enviarPuntuacion" :disabled="validar" class="md-raised md-primary" id="botonPuntos">Enviar</md-button>
+                    </div>
+                  </div>
+              </div>
+              <div v-bind:class="{ sombreado: !turno }" class="md-layout-item md-size-40 md-layout">
+                <div class="md-layout md-layout-item md-size-70 d-flex flex-column align-items-center justify-content-around">
+                  <span class="md-size-100 centrado">{{contrincante}}</span>
+                  <span class="md-display-3 puntuacion" id="marcador">{{partida.visitante.puntos}}</span>
+                </div>
+                <div class="md-layout md-layout-item md-size-30 d-flex flex-column justify-content-around centrado flex-nowrap">
+                  <span class="centrado"><b>Media: {{partida.visitante.media}}</b></span>
+                </div>
+                <!--
+                <md-list class="lista">                 
                   <md-list-item v-for="tirada in partida.visitante.tiradas" :key="tirada">
                     <div class="md-list-item-text puntuacion md-subheading">
                       {{tirada}}
                     </div>
                   </md-list-item>
                 </md-list>
-              </div>
-              <div class="md-layout-item md-size-100" id="estadisticas">
-                <h2 class="centrado">Estadísticas</h2>
-                <div class="md-layout">
-                  <br>
-                  <div class="md-layout-item md-size-50">
-                    <h4 class="centrado"><b>Media: {{partida.local.media}}</b></h4>
-                  </div>
-                  <div class="md-layout-item md-size-50">
-                    <h4 class="centrado"><b>Media: {{partida.visitante.media}}</b></h4>
-                  </div>
-                </div>
-              </div>
-              <div class="md-layout-item md-size-100 h-20" id="inputPuntos">
-                <div class="md-layout-item md-size-100 centrado">{{textoTurno}}</div>
-                <hr>
-                <div class="md-layout" >
-                  <div class="md-layout-item md-size-70">
-                      <input type="text" :disabled="turno" v-on:keyup.enter="enter" v-model="input" id="puntuacion" class="input" placeholder="Introduce tu puntuación" autofocus>
-                  </div>
-                  <div class="md-layout-item md-size-30">
-                    <md-button @click="enviarPuntuacion" :disabled="validar" class="md-raised md-primary enviarPuntuacion">Enviar</md-button>
-                  </div>
-                </div>
+                -->
               </div>
             </div>
           </div>
-          <div class="md-layout-item md-size-60" id="divCamaras">
-            <video id="remote" class="md-elevation-5" autoplay>
+          <div class="md-layout-item md-size-100 flex-fill h-85 md-elevation-5" id="divCamaras">
+            <video id="remote"  autoplay>
             </video>
             <video id="local" class="md-elevation-5" autoplay muted></video>
           </div>
@@ -69,9 +68,11 @@ export default {
   name: 'Game',
   props: ['conexion','user'],
   mounted () {
-    console.log(this.$route)
+    this.usuario = this.$route.query.id || "Jugador 1";
+    console.log(navigator.mediaDevices.enumerateDevices());
     this.socket.emit('paginaJuego', this.$route.query.id);
-    this.contrincante = this.$route.query.contrincante;
+    this.contrincante = this.$route.query.contrincante || "Jugador 2";
+    console.log(this.usuario, this.contrincante);
     var localVideo = document.getElementById('local');
     //SOCKETS PARA INICIAR LA VIDEOLLAMADA
     this.socket.on('preparado',()=>{
@@ -96,14 +97,14 @@ export default {
       .then(() => this.pc.createAnswer())
       .then(sdp => this.pc.setLocalDescription(sdp))
       .then(()=>{
-        this.socket.emit('answer', this.pc.localDescription,contrincante);
+        this.socket.emit('answer', this.pc.localDescription,this.contrincante);
       });
       this.pc.ontrack = (event) => {
         document.getElementById('remote').srcObject = event.streams[0];
       }
       this.pc.onicecandidate = (event) =>{
         if (event.candidate) {
-          this.socket.emit('candidate', event.candidate,contrincante);
+          this.socket.emit('candidate', event.candidate,this.contrincante);
         }
       };
       this.id="visitante";
@@ -114,11 +115,11 @@ export default {
     });
     this.socket.on('answer', (description)=>{
       this.pc.setRemoteDescription(description);
-      this.socket.emit('comenzarPartida');
+      this.socket.emit('comenzarPartida',this.usuario, this.contrincante);
     });
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
-      console.log('comenzar partida');
+      console.log('comenzar partida', this.usuario, this.contrincante);
       this.partida = datos;
       if(this.partida.turno == this.id){
         document.getElementById("puntuacion").focus();
@@ -139,9 +140,10 @@ export default {
   data () {
     return {
       socket: this.conexion,
+      usuario: "Jugador 1",
       //socket: io('http://localhost:3000'),
       pc: null,
-      contrincante: null,
+      contrincante: "Jugador 2",
       partida: {
         local: {
           puntos: 501,
@@ -163,7 +165,7 @@ export default {
       id: null,
       constraints: {
         audio: true,
-        video: { facingMode: "user" }
+        video: true
       },
       pcConf: {
         'iceServers': [{
@@ -247,84 +249,66 @@ export default {
 </script>
 
 <style scoped>
+  .md-app-content{
+    padding:0;
+  }
   .puntuacion{
     display: flex;
-    align-items: center;
     justify-content:center;
-  }
+    border:0;
+    margin:0;
+  }/*
   .lista{
     max-height:200px;
     overflow-y: auto;
   }
-  #divCamaras{
-    height: 100vh;
-    padding-left: 13px;
-  }
-  #divPuntos{
-    height: 100vh;
-  }
+  */
   #aplicacion{
+    height:100vh;
     padding-top:0;
     padding-bottom: 0;
   }
-  .input{
-    font-size: 30px!important;
-    text-align: center;
-    width:100%;
-    overflow:hidden;
+  .sombreado{
+    background-color: gray;
+  }
+  .divInput{
+    margin-top: 1px;
   }
   #inputPuntos{
-    position: relative;
-    bottom: 0;
-  }
-  #marcador1{
-    border-right: 2px solid black;
-  }
-  .enviarPuntuacion{
-    height: 100%;
-    width: 100%;
-    margin-top:0;
-  }
-  .marcador{
-    margin-top: 20px;
-  }
-  #remote{
-    height:100%;
+    padding:0;
     width:100%;
+    height:100%;
   }
-  #local{
-    height:25%;
-    position: absolute;
-    right:0;
-    bottom:0;
+  #botonPuntos{
+    height:100%;
+    width: 100%;
+    margin:0;
   }
-  .h-80{
-    height: 60%;
+  .h-85{
+    height: 85%;
   }
-  .h-20{
-    height: 10%;
+  .h-15{
+    height: 15%;
   }
   .centrado{
     text-align:center;
-    font-size: 20px;
-    font-weight: bold;
   }
-  .rojo{
-    color:red;
-  }
+/*
   #estadisticas{
     height: 26%;
     color: black!important;
+  }*/
+  #remote{
+    width:100%;
+    height:100%;
   }
-  .marcadorlocal{
-    text-align: right;
-    margin: 0;
-    margin-right: 10px;
-  }
-  .marcadorvisitante{
-    text-align: left;
-    margin: 0;
-    margin-left: 10px;
+  #local{
+    position:fixed;
+    right:0;
+    bottom:0;
+    width: 25%;
+    height:25%;
+    max-height:300px;
   }
   .lista::-webkit-scrollbar { width: 0 !important }
   .lista { overflow: -moz-scrollbars-none; }
