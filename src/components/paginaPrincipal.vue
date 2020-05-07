@@ -19,6 +19,7 @@
             <md-list id="usuarios">
               <md-list-item>
                 <input id="checkboxLocal" type="checkbox" @click="cambiarEstado">
+                <label class="check mb-0 mr-2" for="checkboxLocal"></label>
                 <md-avatar class="md-large">
                   <img v-bind:src="userImage" v-bind:alt="user.nick">
                 </md-avatar>
@@ -423,4 +424,45 @@
       background: url("../assets/bg4.jpg");
       background-size: cover;
   }
+#checkboxLocal {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+}
+#checkboxLocal:checked ~ .check {
+  border-color: #00EA90;
+  box-shadow: 0px 0px 0px 15px #00EA90 inset;
+}
+#checkboxLocal:checked ~ .check::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.check {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 100px;
+  background-color: #FFF;
+  border: 2px solid #1c23217c;
+  box-shadow: 0px 0px 0px 0px #00EA90 inset;
+  transition: all 0.15s cubic-bezier(0, 1.05, 0.72, 1.07);
+}
+.check::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 4;
+  position: absolute;
+  transform: scale(0);
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition-delay: 0.2s !important;
+  transition: all 0.25s cubic-bezier(0, 1.05, 0.72, 1.07);
+}
+
 </style>
