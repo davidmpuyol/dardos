@@ -50,7 +50,7 @@ export default {
     data () {
         return {
             logged : false,
-            socket : io(),
+            socket : io("localhost:3000"),
             mensajeError: '',
             user: {nick:'Ejemplo Nick'},
         }

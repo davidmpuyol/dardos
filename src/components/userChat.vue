@@ -13,7 +13,7 @@
     <md-button class="md-icon-button md-list-action" @click="this.cambiarRoom">
       <md-icon>chat</md-icon>
     </md-button>
-    <md-button class="ml-2 md-icon-button md-list-action" @click="this.invitarJugador">
+    <md-button class="ml-2 md-icon-button md-list-action" :disabled="disabled" @click="this.invitarJugador">
       <md-icon>videogame_asset</md-icon>
     </md-button>
     <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${nick}` })">
@@ -66,6 +66,9 @@
       },
       listo:function(){
         return this.ready
+      },
+      disabled:function(){
+        return !this.ready
       }
     }
 }
@@ -78,43 +81,43 @@
 
   }
   .userLista input {
-  opacity: 0;
-  visibility: hidden;
-  position: absolute;
-}
-.userLista input:checked ~ .check {
-  border-color: #00EA90;
-  box-shadow: 0px 0px 0px 15px #00EA90 inset;
-}
-.userLista input:checked ~ .check::after {
-  opacity: 1;
-  transform: scale(1);
-}
-.check {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border-radius: 100px;
-  background-color: #FFF;
-  border: 2px solid #1c23217c;
-  box-shadow: 0px 0px 0px 0px #00EA90 inset;
-  transition: all 0.15s cubic-bezier(0, 1.05, 0.72, 1.07);
-}
-.check::after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  z-index: 4;
-  position: absolute;
-  transform: scale(0);
-  background-size: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition-delay: 0.2s !important;
-  transition: all 0.25s cubic-bezier(0, 1.05, 0.72, 1.07);
-}
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+  .userLista input:checked ~ .check {
+    border-color: #00EA90;
+    box-shadow: 0px 0px 0px 15px #00EA90 inset;
+  }
+  .userLista input:checked ~ .check::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .check {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 100px;
+    background-color: #FFF;
+    border: 2px solid #1c23217c;
+    box-shadow: 0px 0px 0px 0px #00EA90 inset;
+    transition: all 0.15s cubic-bezier(0, 1.05, 0.72, 1.07);
+  }
+  .check::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 4;
+    position: absolute;
+    transform: scale(0);
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition-delay: 0.2s !important;
+    transition: all 0.25s cubic-bezier(0, 1.05, 0.72, 1.07);
+  }
 </style>
