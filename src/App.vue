@@ -24,6 +24,9 @@ export default {
     nav1
   }, 
     mounted () {
+    if(this.$route.query.contrincante){
+        this.$router.push({ path: '/game', query: this.$route.query })
+    }
     this.socket.on('respLogin',(respuesta)=>{
         //cuando recibe respuesta del login guarda la session en el sessionStorage para poder loguearse de vuelta si recarga la pagina
         console.log(respuesta)
@@ -47,7 +50,7 @@ export default {
     data () {
         return {
             logged : false,
-            socket : io('localhost:3000'),
+            socket : io(),
             mensajeError: '',
             user: {nick:'Ejemplo Nick'},
         }

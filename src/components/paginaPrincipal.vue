@@ -373,7 +373,7 @@
         this.socket.emit('aceptarInvitacion',this.jugadorInvitar, this.usr);
         $('.modal-invitado').modal('hide');
         console.log(this.jugadorInvitar)
-        let routeData = this.$router.resolve({path: '/game', query: {contrincante: this.jugadorInvitar, id: this.usr}});
+        let routeData = this.$router.resolve({path: '/', query: {contrincante: this.jugadorInvitar, id: this.usr}});
         window.open(routeData.href, '_blank');
       },
       rechazarInvitacion: function(){
@@ -389,7 +389,7 @@
       jugar: function(){
         $('.modal-invitar').modal('hide');
         console.log(this.jugadorInvitar);
-        let routeData = this.$router.resolve({path: '/game', query: {contrincante: this.jugadorInvitar, id: this.usr}});
+        let routeData = this.$router.resolve({path: '/', query: {contrincante: this.jugadorInvitar, id: this.usr}});
         window.open(routeData.href, '_blank');
       }
     },

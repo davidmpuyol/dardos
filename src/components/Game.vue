@@ -2,7 +2,7 @@
   <md-app>
       <md-app-content>
         <div class="md-layout d-flex flex-column flex-nowrap justify-content-between" id="aplicacion">
-          <div class="md-layout-item md-size-100">
+          <div class="md-layout-item md-size-100 h-15">
             <div class="md-layout h-100">
               <div v-bind:class="{ sombreado: turno }" class="md-layout-item md-size-40 md-layout">
                 <div class="md-layout md-layout-item md-size-30 d-flex flex-column justify-content-around centrado flex-nowrap">
@@ -289,6 +289,7 @@ export default {
   }
   .h-15{
     height: 15%;
+    max-height:150px;
   }
   .centrado{
     text-align:center;
