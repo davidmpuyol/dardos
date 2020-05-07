@@ -122,7 +122,7 @@ export default {
       console.log('comenzar partida', this.usuario, this.contrincante);
       this.partida = datos;
       if(this.partida.turno == this.id){
-        document.getElementById("puntuacion").focus();
+        document.getElementById("inputPuntos").focus();
       }
     })
     this.socket.on('ganador',(ganador)=>{
@@ -131,7 +131,7 @@ export default {
     this.socket.on('tirada',(datos)=>{
       this.partida = datos;
       if(this.partida.turno == this.id){
-        document.getElementById("puntuacion").focus();
+        document.getElementById("inputPuntos").focus();
       }
     })
     this.getUserMediaDevices();
@@ -169,10 +169,7 @@ export default {
       },
       pcConf: {
         'iceServers': [{
-          urls: "stun.l.google.com:19302"
-        },
-        {
-          urls: "stun.services.mozilla.org"
+          urls: "stun:stun.l.google.com:19302"
         },
         {
           urls: "stun:168.63.17.113:3478"
