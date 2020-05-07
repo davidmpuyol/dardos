@@ -169,6 +169,15 @@ export default {
       },
       pcConf: {
         'iceServers': [{
+          urls: "stun.l.google.com:19302"
+        },
+        {
+          urls: "stun.services.mozilla.org"
+        },
+        {
+          urls: "stun:168.63.17.113:3478"
+        },
+        {
           urls: "turn:168.63.17.113:3478",
           username: "davidmpuyol",
           credential: "davidmpuyol"
