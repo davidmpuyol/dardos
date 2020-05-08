@@ -396,7 +396,7 @@
     computed: {
       userImage:function(){
             //Crea la url de la imagen del usuario
-            return "http://localhost:3000/usersIcon/"+this.user.img
+            return "./usersIcon/"+this.user.img
         }
     }
 }

@@ -69,45 +69,52 @@ export default {
   props: ['conexion','user'],
   mounted () {
     this.usuario = this.$route.query.id || "Jugador 1";
-    console.log(navigator.mediaDevices.enumerateDevices());
-    this.socket.emit('paginaJuego', this.$route.query.id);
     this.contrincante = this.$route.query.contrincante || "Jugador 2";
-    console.log(this.usuario, this.contrincante);
+
+    this.socket.emit('paginaJuego', this.$route.query.id);
+
     var localVideo = document.getElementById('local');
-    //SOCKETS PARA INICIAR LA VIDEOLLAMADA
-    this.socket.on('preparado',()=>{
-      console.log('preparado recibido');
-      this.pc = new RTCPeerConnection(this.pcConf);
-      this.pc.addStream(localVideo.srcObject);
-      this.pc.createOffer()
-      .then(offer => this.pc.setLocalDescription(offer))
-      .then(()=>{
-        console.log('offer');
-        this.socket.emit('offer',this.pc.localDescription,this.contrincante);
-      })
-      this.pc.ontrack = (event) => {
-        document.getElementById('remote').srcObject = event.streams[0];
+    var remoteVideo = document.getElementById('remote');
+
+    this.pc = new RTCPeerConnection(this.pcConf);
+
+    this.pc.iceTransportPolicy = "relay";
+
+    this.pc.onaddstream = (event) =>{
+      remoteVideo.srcObject = event.stream;
+    }
+    
+    this.pc.onicecandidate = (event) =>{
+      if(event.candidate){
+        this.socket.emit('candidate', event.candidate,this.contrincante);
       }
-      this.id="local";
+    };
+    /*
+    this.pc.ontrack = (event) => {
+      //if (remoteVideo.srcObject) return;
+      console.log('tracks recibidos');
+      console.log(event);
+      remoteVideo.srcObject = event.streams[0];
+    }
+    */
+    //SOCKETS PARA INICIAR LA VIDEOLLAMADA
+    this.socket.on('preparado',async ()=>{
+      try{
+        await this.pc.setLocalDescription(await this.pc.createOffer())
+        this.socket.emit('offer',this.pc.localDescription,this.contrincante);
+      }
+      catch(err){
+        console.log('Error: '+err)
+      }
     })
-    this.socket.on('offer',(description)=>{
-      this.pc = new RTCPeerConnection(this.pcConf);
-      this.pc.addStream(localVideo.srcObject);
-      this.pc.setRemoteDescription(description)
+
+    this.socket.on('offer',async (description)=>{
+      await this.pc.setRemoteDescription(description)
       .then(() => this.pc.createAnswer())
       .then(sdp => this.pc.setLocalDescription(sdp))
       .then(()=>{
         this.socket.emit('answer', this.pc.localDescription,this.contrincante);
       });
-      this.pc.ontrack = (event) => {
-        document.getElementById('remote').srcObject = event.streams[0];
-      }
-      this.pc.onicecandidate = (event) =>{
-        if (event.candidate) {
-          this.socket.emit('candidate', event.candidate,this.contrincante);
-        }
-      };
-      this.id="visitante";
     })
     this.socket.on('candidate', (candidate)=>{
       this.pc.addIceCandidate(new RTCIceCandidate(candidate))
@@ -117,17 +124,19 @@ export default {
       this.pc.setRemoteDescription(description);
       this.socket.emit('comenzarPartida',this.usuario, this.contrincante);
     });
+
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
-      console.log('comenzar partida', this.usuario, this.contrincante);
       this.partida = datos;
       if(this.partida.turno == this.id){
         document.getElementById("inputPuntos").focus();
       }
     })
+
     this.socket.on('ganador',(ganador)=>{
       this.marcador[ganador]++;
     })
+
     this.socket.on('tirada',(datos)=>{
       this.partida = datos;
       if(this.partida.turno == this.id){
@@ -135,15 +144,13 @@ export default {
       }
     })
     this.getUserMediaDevices();
-    //this.socket.emit('preparado',this.contrincante);
   },
   data () {
     return {
       socket: this.conexion,
-      usuario: "Jugador 1",
-      //socket: io('http://localhost:3000'),
+      usuario: null,
       pc: null,
-      contrincante: "Jugador 2",
+      contrincante: null,
       partida: {
         local: {
           puntos: 501,
@@ -172,13 +179,11 @@ export default {
           urls: "stun:stun.l.google.com:19302"
         },
         {
-          urls: "stun:168.63.17.113:3478"
-        },
-        {
           urls: "turn:168.63.17.113:3478",
           username: "davidmpuyol",
           credential: "davidmpuyol"
-        }]
+        }
+        ],
       },
       gettingUserMedia: false
     }
@@ -194,7 +199,7 @@ export default {
       this.socket.emit('tirada',datos);
       this.input = null;
     },
-    getUserMediaDevices(){
+    async getUserMediaDevices(){
       let localVideo = document.getElementById('local');
       if (localVideo instanceof HTMLVideoElement) {
         if (localVideo.srcObject) {
@@ -202,7 +207,7 @@ export default {
           this.gettingUserMedia = false;
         } else if (!this.gettingUserMedia && !localVideo.srcObject) {
           this.gettingUserMedia = true;
-          navigator.mediaDevices.getUserMedia(this.constraints)
+          await navigator.mediaDevices.getUserMedia(this.constraints)
           .then(this.getUserMediaSuccess)
           .catch(this.getUserMediaError);
         }
@@ -211,7 +216,7 @@ export default {
     getUserMediaSuccess(stream){
       let localVideo = document.getElementById('local');
       this.gettingUserMedia = false;
-      //adapter.attachMediaStream(localVideo, stream);
+      this.pc.addStream(stream);
       if (localVideo instanceof HTMLVideoElement) {
         !localVideo.srcObject && (localVideo.srcObject = stream);
       }
@@ -231,10 +236,7 @@ export default {
     validar(){
       if(!this.input){
         return true;
-      }/*
-      if(!this.miturno){
-        return true;
-      }*/
+      }
       if(!this.input.match(/^[0-9]*$/)){
         return true;
       }
