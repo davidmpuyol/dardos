@@ -2,7 +2,9 @@
     <main>
         <nav1 v-if="this.fueraJuego" v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
         <section v-if="this.logged">
+            <keep-alive include="pagina-principal">
             <router-view :conexion='this.socket' :user='this.user'></router-view>
+            </keep-alive>
         </section>
         <section v-else>
             <h2 class="text-center">{{this.mensajeError}}</h2>
@@ -50,7 +52,7 @@ export default {
     data () {
         return {
             logged : false,
-            socket : io(),
+            socket : io("localhost:3000"),
             mensajeError: '',
             user: {nick:'Ejemplo Nick'},
         }
@@ -307,6 +309,63 @@ nav li a{
 #controlesChatStream{
     height: 5%;
 }
+.bounce{
+	animation-name: bounce;
+	-webkit-animation-name: bounce;	
+
+	animation-duration: 0.6s;	
+	-webkit-animation-duration: 0.6s;
+
+	animation-timing-function: ease;	
+	-webkit-animation-timing-function: ease;	
+	
+	transform-origin: 50% 100%;
+	-ms-transform-origin: 50% 100%;
+	-webkit-transform-origin: 50% 100%; 	
+}
+
+@keyframes bounce {
+	0% {
+		transform: translateY(0%) scaleY(0.6);
+	}
+	60%{
+		transform: translateY(-100%) scaleY(1.1);
+	}
+	70%{
+		transform: translateY(0%) scaleY(0.95) scaleX(1.05);
+	}
+	80%{
+		transform: translateY(0%) scaleY(1.05) scaleX(1);
+	}	
+	90%{
+		transform: translateY(0%) scaleY(0.95) scaleX(1);
+	}				
+	100%{
+		transform: translateY(0%) scaleY(1) scaleX(1);
+	}	
+}
+
+@-webkit-keyframes bounce {
+	0% {
+		-webkit-transform: translateY(0%) scaleY(0.6);
+	}
+	60%{
+		-webkit-transform: translateY(-100%) scaleY(1.1);
+	}
+	70%{
+		-webkit-transform: translateY(0%) scaleY(0.95) scaleX(1.05);
+	}
+	80%{
+		-webkit-transform: translateY(0%) scaleY(1.05) scaleX(1);
+	}	
+	90%{
+		-webkit-transform: translateY(0%) scaleY(0.95) scaleX(1);
+	}				
+	100%{
+		-webkit-transform: translateY(0%) scaleY(1) scaleX(1);
+	}		
+}
+
 
 
 </style>

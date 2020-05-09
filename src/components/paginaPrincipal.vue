@@ -50,9 +50,15 @@
                 <div class="md-list-item-text">
                   <p class="text-center nombreUserLista">Chat General</p>
                 </div>
-                <md-button class="md-icon-button md-list-action"  v-on:click="cambiarRoom('general')">
+                <md-button class="md-icon-button md-list-action mr-0"  v-on:click="cambiarRoom('general')">
                   <md-icon>chat</md-icon>
-                </md-button>
+                  </md-button>
+              <div v-if="montado">
+                <div v-if="notificacion['general']" class="bounce">
+                  <md-badge  v-bind:md-content="notificacion['general']" class="md-primary" dense>
+                  </md-badge>
+                </div>
+              </div>
               </md-list-item>
               <md-divider class="md-inset"></md-divider>
               <!-- <div id="chatGeneral" class="usuarioChat d-flex align-items-center">
@@ -61,7 +67,7 @@
                     <p id="usernameNav" class="m-0 texto-oscuro text-center" v-on:click="cambiarRoom('general')">Chat General</p>
                   </div>
               </div> -->
-            <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
+            <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :mensajes="notificacion[user.nick]" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
             </userChat>
             </md-list>
           </div>
@@ -134,40 +140,56 @@
             console.log(msg)
         });
       this.socket.on('reenvio',(msg)=>{
+            let foco = false
             //si el mensaje que recibe va a la misma room a la que se esta observando, lo añade a la lista y despues lo añade al registro de mensajes
             //del usuario que lo ha enviado
             console.log('llegan los mensajes'+msg)
             console.log(msg.userDest+'------'+this.roomActual)
             //Si el usuario que manda el mensaje esta puesto en el foco del chat y la room a la que va no es la general se mostrara en el chat privado
-            if(msg.dest == this.roomActual && msg.usr != this.usr)
+            if(msg.dest == this.roomActual && msg.usr != this.usr){
                   this.mostrarMensaje(msg,false)
-            else
-              if(msg.usr == this.roomActual && msg.userDest == this.usr && msg.dest != 'general')
+                  foco = true
+            }else
+              if(msg.usr == this.roomActual && msg.userDest == this.usr && msg.dest != 'general'){
                 this.mostrarMensaje(msg,false)
+                foco = true
+              }
             //Si el mensaje no va a la room general lo introduce en el array del usuario emisor
             if(msg.usr != this.usr){
               if(msg.dest != 'general'){
                   if(!this.chat[msg.usr])
                       this.chat[msg.usr] = []
                   this.chat[msg.usr].push(msg)
+                  if(!foco)
+                    this.notificacion[msg.usr]++
               }else{
                   if(!this.chat['general'])
                       this.chat['general'] = []
                   this.chat['general'].push(msg)
+                  if(!foco)
+                    this.notificacion['general']++
               }
             }
+            console.log(foco)
+            console.log(this.notificacion)
+            this.$forceUpdate()
         })
         this.socket.on('listaUsuarios',(listaUsuarios)=>{
             //Si la lista de usuarios del cliente esta vacia, la llena y crea un elemento en la lista por cada uno de ellos
             if(!this.usuarios){
               delete(listaUsuarios[this.user.nick])
               this.usuarios = listaUsuarios
+             Object.keys(listaUsuarios).forEach(element => {
+                this.notificacion[element] = 0
+              });
+              this.notificacion['general'] = 0
             }
             //Por cada elemento que falte en la lista lo añade.
             Object.keys(listaUsuarios).forEach(clave => {
                 if(!Object.keys(this.usuarios).includes(clave)){
                     if(clave != this.usr){
                         this.usuarios[clave] = listaUsuarios[clave]
+                        this.notificacion[clave] = 0
                     }
                 }
             })
@@ -235,6 +257,7 @@
             // instead of a settings object
           ]
         });
+        this.montado = true
       },
     data () {
       return {
@@ -247,6 +270,8 @@
         jugadorInvitar: null,
         textoInvitar: null,
         textoInvitado: null,
+        notificacion: Object(),
+        montado: false
       }
     },
     updated() {
@@ -292,6 +317,7 @@
       cambiarRoom: function(clave){
           //cambia la room actual por la correspondiente y carga los mensajes guardados.
           console.log(clave)
+          this.notificacion[clave] = 0
           if(clave == 'general')
               $('#tituloChat').text('Chat General')
           else
@@ -305,6 +331,7 @@
                   else
                     this.mostrarMensaje(msg,false)
               })
+          this.$forceUpdate()
       },
       /*anadirUsuarios: function(clave,socket){
           //Crea el elemento de la lista que hace referencia a ese usuario
@@ -396,8 +423,8 @@
     computed: {
       userImage:function(){
             //Crea la url de la imagen del usuario
-            return "./usersIcon/"+this.user.img
-        }
+            return "http://localhost:3000/usersIcon/"+this.user.img
+        },
     }
 }
 

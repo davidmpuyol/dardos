@@ -9,10 +9,13 @@
     <div class="md-list-item-text">
       <p class="text-center nombreUserLista">{{nick}}</p>
     </div>
-
-    <md-button class="md-icon-button md-list-action" @click="this.cambiarRoom">
-      <md-icon>chat</md-icon>
+    <md-button class="md-icon-button mr-0" @click="this.cambiarRoom">
+        <md-icon>chat</md-icon>
     </md-button>
+    <div v-if="mensajesNuevos != 0" class="bounce">
+      <md-badge  v-bind:md-content="mensajesNuevos" class="md-primary" dense>
+      </md-badge>
+    </div>
     <md-button class="ml-2 md-icon-button md-list-action" :disabled="disabled" @click="this.invitarJugador">
       <md-icon>videogame_asset</md-icon>
     </md-button>
@@ -20,6 +23,7 @@
       <md-icon>account_circle</md-icon>
     </md-button>
   </md-list-item>
+  
   <!-- <div class="usuarioChat d-flex align-items-center" id="Xoquiitoo">
     <input type="checkbox" v-model="listo" disabled="disabled"><img v-bind:src="userImage" class="mr-1 imgUser">
     <div class="d-flex justify-content-between align-items-center nombreInvitar">
@@ -37,9 +41,10 @@
 
   export default  {
     name: 'user-chat',
-    props: ['nick','ready','img'],
+    props: ['nick','ready','img','mensajes'],
     mounted () {
       console.log(this.listo)
+      console.log(this.mensajes)
     },
     updated () {
       console.log("hace update")
@@ -64,6 +69,9 @@
           //Crea la url de la imagen del usuario
           return "http://localhost:3000/usersIcon/"+this.img
       },
+      mensajesNuevos:function(){
+        return this.mensajes
+      },
       listo:function(){
         return this.ready
       },
@@ -79,6 +87,10 @@
 <style scoped lang="css">
   .user-chat {
 
+  }
+  .botonCambiarRoom{
+    height: 45px;
+    width: 45px;
   }
   .userLista input {
     opacity: 0;
