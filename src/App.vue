@@ -1,9 +1,9 @@
 <template>
     <main>
-        <nav1 v-if="this.fueraJuego" v-on:logueado="this.logueado" v-on:logout='this.logout' :conexion='this.socket' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
+        <nav1 v-if="this.fueraJuego" v-on:logueado="this.logueado" v-on:delNotificacion="this.removeNotification" v-on:logout='this.logout' :conexion='this.socket' :notificaciones='this.notificaciones' :nick='this.user.nick' :img='this.user.img' :logged='this.logged'></nav1>
         <section v-if="this.logged">
             <keep-alive include="pagina-principal">
-            <router-view :conexion='this.socket' :user='this.user'></router-view>
+            <router-view :conexion='this.socket' v-on:notificacion="this.addNotificacion" :user='this.user'></router-view>
             </keep-alive>
         </section>
         <section v-else>
@@ -47,7 +47,6 @@ export default {
        this.mensajeError = 'Tienes que estar loggeado'
     },
     updated() {
-        
     },
     data () {
         return {
@@ -55,6 +54,7 @@ export default {
             socket : io("localhost:3000"),
             mensajeError: '',
             user: {nick:'Ejemplo Nick'},
+            notificaciones: {nada:{icon:'notifications_paused',text:"No hay notificaciones",ruta:"/"}}
         }
     },
     methods: {
@@ -67,6 +67,25 @@ export default {
             this.socket.emit('logout',sessionStorage.id)
             this.logged = false,
             sessionStorage.removeItem('id')
+        },
+        addNotificacion:function(notificacion){
+            //añade la notificacion pasada como parametro
+            console.log("entra en añadir notificacion")
+            console.log(Object.keys(notificacion)[0])
+            let key = Object.keys(notificacion)[0]
+            if(!this.notificaciones[key]){
+                if(this.notificaciones.nada)
+                    delete this.notificaciones.nada
+                this.notificaciones = notificacion
+            }
+            this.$forceUpdate()
+        },
+        removeNotification:function(notification){
+            //elimina la notificacion cuya clave sea la pasada como parametro, si una vez eliminada se queda vacio el objeto mete el mensaje de que no hay notificaciones
+            delete this.notificaciones[notification]
+            if(Object.keys(this.notificaciones).length == 0)
+                this.notificaciones = {nada:{icon:'notifications_paused',text:"No hay notificaciones",ruta:"/"}}
+            this.$forceUpdate()
         }
     },
     computed: {

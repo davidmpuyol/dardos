@@ -172,6 +172,10 @@
             }
             console.log(foco)
             console.log(this.notificacion)
+            if (this.$route.path != '/'){
+              console.log("emite evento")
+              this.$emit('notificacion',{men:{icon:'chat',text:"Tienes mensajes nuevos",ruta:"/"}})
+            }
             this.$forceUpdate()
         })
         this.socket.on('listaUsuarios',(listaUsuarios)=>{
