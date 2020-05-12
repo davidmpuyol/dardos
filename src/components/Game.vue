@@ -73,15 +73,18 @@ export default {
 
     this.socket.emit('paginaJuego', this.$route.query.id);
 
-    var localVideo = document.getElementById('local');
-    var remoteVideo = document.getElementById('remote');
+    this.localVideo = document.getElementById('local');
+    this.remoteVideo = document.getElementById('remote');
 
+    this.remoteStream = new MediaStream();
+
+    this.remoteVideo.srcObject = this.remoteStream;
     this.pc = new RTCPeerConnection(this.pcConf);
 
     this.pc.iceTransportPolicy = "relay";
 
-    this.pc.onaddstream = (event) =>{
-      remoteVideo.srcObject = event.stream;
+    this.pc.ontrack = async (event) =>{
+      this.remoteStream.addTrack(event.track, this.remoteStream);
     }
     
     this.pc.onicecandidate = (event) =>{
@@ -150,6 +153,10 @@ export default {
       socket: this.conexion,
       usuario: null,
       pc: null,
+      localVideo: null,
+      remoteVideo: null,
+      localStream: null,
+      remoteStream: null,
       contrincante: null,
       partida: {
         local: {
@@ -200,26 +207,29 @@ export default {
       this.input = null;
     },
     async getUserMediaDevices(){
-      let localVideo = document.getElementById('local');
-      if (localVideo instanceof HTMLVideoElement) {
-        if (localVideo.srcObject) {
-          this.getUserMediaSuccess(localVideo.srcObject);
+      //if (this.localVideo instanceof HTMLVideoElement) {
+        /*if (this.localVideo.srcObject) {
+          this.getUserMediaSuccess(this.localVideo.srcObject);
           this.gettingUserMedia = false;
-        } else if (!this.gettingUserMedia && !localVideo.srcObject) {
+        } else if (!this.gettingUserMedia && !localVideo.srcObject) {*/
           this.gettingUserMedia = true;
           await navigator.mediaDevices.getUserMedia(this.constraints)
           .then(this.getUserMediaSuccess)
           .catch(this.getUserMediaError);
-        }
-      }
+        //}
+      //}
     },
     getUserMediaSuccess(stream){
-      let localVideo = document.getElementById('local');
+      this.localStream = stream;
       this.gettingUserMedia = false;
-      this.pc.addStream(stream);
-      if (localVideo instanceof HTMLVideoElement) {
-        !localVideo.srcObject && (localVideo.srcObject = stream);
-      }
+      stream.getTracks().forEach(track => {
+          this.pc.addTrack(track, stream);
+      });
+      this.localVideo.srcObject = stream;
+      /*
+      if (this.localVideo instanceof HTMLVideoElement) {
+        !this.localVideo.srcObject && (localVideo.srcObject = stream);
+      }*/
       this.socket.emit('preparado',this.contrincante);
     },
     getUserMediaError(error){
