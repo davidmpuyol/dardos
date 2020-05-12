@@ -74,16 +74,20 @@ export default {
             console.log(Object.keys(notificacion)[0])
             let key = Object.keys(notificacion)[0]
             if(!this.notificaciones[key]){
-                if(this.notificaciones.nada)
-                    delete this.notificaciones.nada
+                if(this.notificaciones.nada){
+                    delete this.notificaciones.nada;
+                    this.notificaciones.visto=false
+                }
                 this.notificaciones = notificacion
+                this.notificaciones.visto = false
+
             }
             this.$forceUpdate()
         },
         removeNotification:function(notification){
             //elimina la notificacion cuya clave sea la pasada como parametro, si una vez eliminada se queda vacio el objeto mete el mensaje de que no hay notificaciones
             delete this.notificaciones[notification]
-            if(Object.keys(this.notificaciones).length == 0)
+            if(Object.keys(this.notificaciones).length == 1 && Object.keys(this.notificaciones)[0] == "visto")
                 this.notificaciones = {nada:{icon:'notifications_paused',text:"No hay notificaciones",ruta:"/"}}
             this.$forceUpdate()
         }
