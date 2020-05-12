@@ -188,7 +188,8 @@
               });
               this.notificacion['general'] = 0
             }
-            //Por cada elemento que falte en la lista lo añade.
+            //Por cada elemento que falte en la lista lo añade. Si no habia nada antes, añade un elemento "visto" que contendra un boolean que sera el que decidira
+            //si se va a ver la notificacion visual
             Object.keys(listaUsuarios).forEach(clave => {
                 if(!Object.keys(this.usuarios).includes(clave)){
                     if(clave != this.usr){

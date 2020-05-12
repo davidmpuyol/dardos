@@ -20,7 +20,7 @@
             </ul>
             <div>
               <div id="iconoNotificaciones"  @click="this.verNotificaciones">
-                <md-icon class="m-0 w-100" v-if="this.logged">notifications</md-icon>
+                <md-icon class="m-0 w-100 mr-4" id="campanaNotificaciones" v-if="this.logged">{{campana}}</md-icon>
               </div>
               <div class="notificaciones overflow-auto">
                     <md-list class="listaNotificaciones">
@@ -154,13 +154,18 @@
       })
     },
     updated(){
-      console.log(this.notificaciones)
+      console.log(this.alertas)
+      if(!this.notificaciones.nada && !this.notificaciones.visto){
+        $("#campanaNotificaciones").addClass("campana")
+        this.campana="notifications_active"
+      }
     },
     data () {
       return {
         registerStatus: "",
         errorLogin: "",
-        userImg:this.img
+        userImg:this.img,
+        campana:"notifications",
       }
     },
     methods: {
@@ -176,11 +181,14 @@
       },
       verNotificaciones: function(){
         //muestrea la lista de notificaciones
+        this.notificaciones.visto = true
+        $("#campanaNotificaciones").removeClass("campana");
+        this.campana="notifications";
         console.log('intenta mostrar notificaciones')
         if ($('.notificaciones').is(':visible')) {
             $('.notificaciones').hide();
         } else {
-            $('.notificaciones').show();
+          $('.notificaciones').show();
         }
       },
       registrarse:function(){
@@ -200,7 +208,12 @@
             return "http://localhost:3000/usersIcon/"+this.img
         },
       alertas:function(){
-        return this.notificaciones
+        let alertas={}
+        Object.keys(this.notificaciones).filter((clave)=>{
+          if(clave != "visto")
+            alertas[clave] = this.notificaciones[clave]
+        })
+        return alertas
       }, 
     }
 }
@@ -225,13 +238,18 @@
   .md-list-item{
     padding: 0px !important;
   }
+  #campanaNotificaciones{
+    font-size: 2.2em !important;
+    color: white !important;
+  }
   .notificaciones{
     position: absolute;
     z-index: 10;
     display: none;
     max-height: 14em;
     max-width: 18em;
-    right: 19.5em;
+    top:67px;
+    right: 20.1em;
     border: #1c23217c solid 2px;
     /* -webkit-box-shadow: inset 0px 2px 16px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 0px 2px 16px 0px rgba(0,0,0,0.75);
@@ -247,5 +265,45 @@
       max-height: 14em;
       border: #1c23217c solid 1px;
     }
+  }
+  .campana{
+    animation-name: campana;
+    -webkit-animation-name: campana;	
+
+    animation-duration: 2.0s;	
+    -webkit-animation-duration: 2.0s;
+
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+  }
+
+  @keyframes campana {
+    0% {
+      transform: rotate(-4deg);	
+    }
+    25% {
+      transform: rotate(4deg);
+    }
+    50% {
+      transform: rotate(-4deg);	
+    }
+    100% {
+      transform: rotate(0deg);	
+    }								
+  }
+
+  @-webkit-keyframes campana {
+    0% {
+      -webkit-transform: rotate(-4deg);	
+    }
+    25% {
+      -webkit-transform: rotate(4deg);
+    }
+    50% {
+      -webkit-transform: rotate(-4deg);	
+    }
+    100% {
+      -webkit-transform: rotate(0deg);	
+    }				
   }
 </style>
