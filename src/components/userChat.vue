@@ -5,23 +5,27 @@
     <md-avatar class="md-large">
       <img v-bind:src="userImage" v-bind:alt="nick">
     </md-avatar>
-
-    <div class="md-list-item-text">
-      <p class="text-center nombreUserLista">{{nick}}</p>
+    <div class="w-100 row m-0 p-0">
+      <div class="d-flex align-items-center justify-content-center col-12 col-lg-7">
+        <p class="text-center nombreUserLista m-0" :title="nick">{{nick}}</p>
+        <md-icon :title="this.badge_label" class="ml-1">{{badge}}</md-icon>
+      </div>
+      <div class="botonesUser col-12 col-lg-5 d-flex justify-content-lg-end justify-content-between">
+        <md-button class="md-icon-button mr-0" @click="this.cambiarRoom">
+            <md-icon>chat</md-icon>
+        </md-button>
+        <div v-if="mensajesNuevos != 0" class="bounce">
+          <md-badge  v-bind:md-content="mensajesNuevos" class="md-primary" dense>
+          </md-badge>
+        </div>
+        <md-button class="ml-2 md-icon-button md-list-action" :disabled="disabled" @click="this.invitarJugador">
+          <md-icon>videogame_asset</md-icon>
+        </md-button>
+        <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${nick}` })">
+          <md-icon>account_circle</md-icon>
+        </md-button>
+      </div>
     </div>
-    <md-button class="md-icon-button mr-0" @click="this.cambiarRoom">
-        <md-icon>chat</md-icon>
-    </md-button>
-    <div v-if="mensajesNuevos != 0" class="bounce">
-      <md-badge  v-bind:md-content="mensajesNuevos" class="md-primary" dense>
-      </md-badge>
-    </div>
-    <md-button class="ml-2 md-icon-button md-list-action" :disabled="disabled" @click="this.invitarJugador">
-      <md-icon>videogame_asset</md-icon>
-    </md-button>
-    <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${nick}` })">
-      <md-icon>account_circle</md-icon>
-    </md-button>
   </md-list-item>
   
   <!-- <div class="usuarioChat d-flex align-items-center" id="Xoquiitoo">
@@ -41,17 +45,41 @@
 
   export default  {
     name: 'user-chat',
-    props: ['nick','ready','img','mensajes'],
+    props: ['nick','ready','img','mensajes','tipo_usuario'],
     mounted () {
-      console.log(this.listo)
-      console.log(this.mensajes)
+      switch (this.tipo_usuario) {
+        case 0:
+          this.badge = null
+          break;
+        case 1:
+          this.badge = "camera_alt"
+          this.badge_label = "Camara verificada"
+          break;
+        case 2:
+          this.badge = "grade"
+          this.badge_label = "Usuario premium"
+          break;
+        case 3:
+          this.badge = "verified_user"
+          this.badge_label = "Usuario verificador"
+          break;
+        case 4:
+          this.badge = "build"
+          this.badge_label = "Usuario administrador"
+          break;
+        default:
+          this.badge = null
+          break;
+      }
     },
     updated () {
       console.log("hace update")
     },
     data () {
       return {
-        nombre : this.nick
+        nombre : this.nick,
+        badge: null,
+        badge_label: "",
       }
     },
     methods: {
@@ -106,7 +134,7 @@
     transform: scale(1);
   }
   .check {
-    width: 30px;
+    min-width: 30px;
     height: 30px;
     display: flex;
     justify-content: center;

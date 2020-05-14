@@ -24,8 +24,9 @@
                   <img v-bind:src="userImage" v-bind:alt="user.nick">
                 </md-avatar>
 
-                <div class="md-list-item-text">
-                  <p class="text-center nombreUserLista">{{user.nick}}</p>
+                <div class="d-flex w-75 align-items-center justify-content-center">
+                  <p class="text-center nombreUserLista m-0">{{user.nick}}</p>
+                  <md-icon :title="this.badge_label" class="ml-1">{{badge}}</md-icon>
                 </div>
                 <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${user.nick}` })">
                   <md-icon>account_circle</md-icon>
@@ -67,7 +68,7 @@
                     <p id="usernameNav" class="m-0 texto-oscuro text-center" v-on:click="cambiarRoom('general')">Chat General</p>
                   </div>
               </div> -->
-            <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :mensajes="notificacion[user.nick]" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
+            <userChat v-for="user in this.usuarios" :nick="user.nick" :img="user.img" :ready="user.ready" :tipo_usuario="user.tipo_usuario" :mensajes="notificacion[user.nick]" :key="user.id" v-on:cambiarSala="cambiarRoom" @invitar="prepInvitar">
             </userChat>
             </md-list>
           </div>
@@ -133,12 +134,36 @@
     },    
     mounted () {
       console.log('se monta')
-        this.usr=this.user.nick
-        //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
-        this.socket.emit('userConected',this.user)
-        this.socket.on('user',(msg)=>{
-            console.log(msg)
-        });
+      switch (this.user.tipo_usuario) {
+        case 0:
+          this.badge = null
+          break;
+        case 1:
+          this.badge = "camera_alt"
+          this.badge_label = "Camara verificada"
+          break;
+        case 2:
+          this.badge = "grade"
+          this.badge_label = "Usuario premium"
+          break;
+        case 3:
+          this.badge = "verified_user"
+          this.badge_label = "Usuario verificador"
+          break;
+        case 4:
+          this.badge = "build"
+          this.badge_label = "Usuario administrador"
+          break;
+        default:
+          this.badge = null
+          break;
+      }
+      this.usr=this.user.nick
+      //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
+      this.socket.emit('userConected',this.user)
+      this.socket.on('user',(msg)=>{
+          console.log(msg)
+      });
       this.socket.on('reenvio',(msg)=>{
             let foco = false
             //si el mensaje que recibe va a la misma room a la que se esta observando, lo añade a la lista y despues lo añade al registro de mensajes
@@ -276,7 +301,9 @@
         textoInvitar: null,
         textoInvitado: null,
         notificacion: Object(),
-        montado: false
+        montado: false,
+        badge: null,
+        badge_label:""
       }
     },
     updated() {
@@ -470,7 +497,7 @@
   transform: scale(1);
 }
 .check {
-  width: 30px;
+  min-width: 30px;
   height: 30px;
   display: flex;
   justify-content: center;

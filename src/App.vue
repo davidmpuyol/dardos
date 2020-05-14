@@ -36,6 +36,7 @@ export default {
                 sessionStorage.id = respuesta.idSession
                 this.user = respuesta
                 this.logged = true;
+                console.log(this.user)
                 $(".modal-login").modal('hide')
             }
     })
@@ -195,6 +196,7 @@ nav li a{
 #usuarios{
     height: 73.2vh;
     border-left: #1c23217c solid 1px;
+    overflow-y: auto;
 }
 .sombra{
     -webkit-box-shadow: 10px 10px 24px 0px rgba(0,0,0,0.75);
@@ -220,6 +222,8 @@ nav li a{
 .nombreUserLista{
     font-size: 1.5em;
     font-weight: bold;
+    overflow:hidden;
+    text-overflow: ellipsis;
   }
 .torneoC{
     height: 20vh !important;
