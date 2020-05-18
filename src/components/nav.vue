@@ -262,6 +262,7 @@
       right: 0;
       max-width: 100%;
       width: 100%;
+      top:4px;
       max-height: 14em;
       border: #1c23217c solid 1px;
     }

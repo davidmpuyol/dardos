@@ -8,8 +8,8 @@
       <div class="input-group">
         <select id="selectTipo" v-model="fTipo" class="">
           <option value="">Todos</option>
-          <option value=1>Oficial</option>
-          <option value=2>Comunidad</option>
+          <option value=1>Comunidad</option>
+          <option value=2>Oficial</option>
         </select>
         <div class="input-group-append" id="inputBuscador">
           <input class="input-group-text w-100" v-model="fNombre" type="text"/>
@@ -32,7 +32,7 @@
       cardTorneo
     }, 
     mounted () {
-      //Los torneos tipo 1 son los torneos oficiales y los torneo tipo 2 son los de la comunidad
+      //Los torneos tipo 2 son los torneos oficiales y los torneo tipo 1 son los de la comunidad
       this.conexion.on('resultadoTorneos',(resultado)=>{
         this.torneos = resultado
         console.log(this.torneos)

@@ -4,7 +4,7 @@
     <img class="card-img-top" src="../assets/bg1.jpg" alt="Card image cap">
     <div class="card-body">
       <h5 class="card-title">{{torneo.nombre}}</h5>
-      <md-button class="md-raised b-0" >Ver detalles</md-button>
+      <md-button class="md-raised b-0" @click="this.detalle">Ver detalles</md-button>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
     name: 'card-torneo',
     props: ["torneo"],
     mounted () {
-
+      console.log(this.torneo._id)
     },
     data () {
       return {
@@ -24,7 +24,9 @@
       }
     },
     methods: {
-
+      detalle (){
+        this.$router.push({ path: 'torneos/'+this.torneo._id})
+      }
     },
     computed: {
 

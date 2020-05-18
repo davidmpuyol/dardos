@@ -16,6 +16,7 @@ import Game from './components/Game.vue'
 import torneos from './components/torneos.vue'
 import directos from './components/directos.vue'
 import perfil from './components/perfil.vue'
+import detalleTorneo from './components/detalleTorneo.vue'
 
 var $ = require('jquery');
 window.$ = $;
@@ -30,6 +31,7 @@ const routes = [
   { path: '/torneos', component: torneos},
   { path: '/directos', component: directos},
   { path: '/perfil/:nick', component: perfil, props: true},
+  { path: '/torneos/:id', component: detalleTorneo, props: true},
 ]
 
 const router = new VueRouter({
