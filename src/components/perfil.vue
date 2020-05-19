@@ -50,6 +50,9 @@
       console.log(this.nick)
       this.conexion.emit('solicitarDatosPerfil',this.nick)
     },
+    beforeDestroy(){
+      this.conexion.off("respDatosPerfil")
+    },
     data () {
       return {
         cargado:false,

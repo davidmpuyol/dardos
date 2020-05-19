@@ -289,6 +289,16 @@
         });
         this.montado = true
       },
+    beforeDestroy(){
+      this.conexion.off("userConected")
+      this.conexion.off("reenvio")
+      this.conexion.off("listaUsuarios")
+      this.conexion.off("usuarioDesc")
+      this.conexion.off("menPriv")
+      this.conexion.off("cambEstado")
+      this.conexion.off("invitacion")
+      this.conexion.off("invitacionAceptada")
+    },
     data () {
       return {
         chat: Object(),

@@ -153,6 +153,10 @@
         }
       })
     },
+    beforeDestroy(){
+      this.conexion.off("errorLogin")
+      this.conexion.off("resultadoRegistro")
+    },
     updated(){
       console.log(this.alertas)
       if(!this.notificaciones.nada && !this.notificaciones.visto){

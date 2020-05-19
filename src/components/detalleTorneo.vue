@@ -1,7 +1,21 @@
 <template lang="html">
 
-  <section class="detalle-torneo">
-    <h1>detalle-torneo Component</h1>
+  <section class="detalle-torneo" :style="cssVars">
+    <section id="fondotorneo" class="d-flex align-items-center justify-content-center sombraInsetComp">
+      <h2 id="tituloTorneo">{{datosTorneo.nombre}}</h2>
+    </section>
+    <article id="datos" class="container pt-5">
+      <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
+      <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
+      <md-list id="listaJugadores" class="md-double-line border">
+        <md-list-item v-for="jugador in this.datosTorneo.jugadores">
+          <label>{{ jugador }}</label>
+          <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${jugador}` })">
+            <md-icon>account_circle</md-icon>
+          </md-button>
+        </md-list-item>
+      </md-list>
+    </article>
   </section>
 
 </template>
@@ -10,21 +24,41 @@
 
   export default  {
     name: 'detalle-torneo',
-    props: ["id"],
-    mounted () {
-      console.log(this.id)
+    props: ["id","conexion"],
+    beforeMount () {
+      this.conexion.on("resultadoTorneo",(result) => {
+        this.torneo = result
+        console.log(result)
+      })
+      this.conexion.emit("detalleTorneo",this.id)
     },
     data () {
       return {
-
+        torneo: {}
       }
     },
+    updated () {
+      console.log(this.datosTorneo)
+    },
     methods: {
-
+      abrirLista() {
+        if ($('#listaJugadores').is(':visible')) {
+            $('#listaJugadores').hide(600);
+        } else {
+          $('#listaJugadores').show(600);
+        }
+      }
     },
     computed: {
-
-    }
+      cssVars() {
+        return {
+          '--bg-img': "url(http://localhost:3000/imgApp/"+this.torneo.img+")",
+        }
+      },
+      datosTorneo() {
+        return this.torneo
+      }
+    },
 }
 
 
@@ -33,5 +67,20 @@
 <style scoped lang="css">
   .detalle-torneo {
 
+  }
+  #fondotorneo{
+    width: 100%;
+    height: 50vh;
+    background-image: var(--bg-img);
+    background-attachment: fixed;
+  }
+  #tituloTorneo{
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.699);
+    color: white;
+    text-align: center;
+  }
+  #listaJugadores{
+    display: none;
   }
 </style>
