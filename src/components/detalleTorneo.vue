@@ -40,7 +40,7 @@
         if(result[1]){
           $(".alert").addClass("alert-success")
           this.textoAlert = result[1]
-          this.$forceUpdate()
+          this.conexion.emit("detalleTorneo",this.id)
         } else {
           $(".alert").addClass("alert-danger")
           this.textoAlert = result[0]
@@ -59,8 +59,7 @@
       }
     },
     updated () {
-      console.log(this.datosTorneo)
-      this.conexion.emit("detalleTorneo",this.id)
+      
     },
     methods: {
       abrirLista() {
