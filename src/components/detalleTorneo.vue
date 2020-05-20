@@ -9,6 +9,7 @@
         <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
         <md-button class="md-raised b-0" @click="this.apuntarse">Apuntarse Torneo</md-button>
       </div>
+      <p><strong>Tiempo restante antes del cierre: {{tiempo}}</strong></p>
       <div class="alert " role="alert">
         {{textoAlert}}
       </div>
@@ -31,9 +32,12 @@
   export default  {
     name: 'detalle-torneo',
     props: ["id","conexion","user"],
-    beforeMount () {
+    mounted () {
+      console.log(this.relojActivo)
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
+        if(!this.relojActivo)
+          this.crearReloj()
         console.log(result)
       })
       this.conexion.on("respuestaApuntarse",(result) => {
@@ -55,7 +59,9 @@
     data () {
       return {
         torneo: {},
-        textoAlert: "Texto ejemplo"
+        textoAlert: "Texto ejemplo",
+        tiempo: 0,
+        relojActivo: false,
       }
     },
     updated () {
@@ -67,6 +73,18 @@
             $('#listaJugadores').hide(600);
         } else {
           $('#listaJugadores').show(600);
+        }
+      },
+      crearReloj() {
+        if((this.torneo.fecha-Date.now())>0){
+          console.log("entra en el if")
+          let timestamp=this.torneo.fecha-Date.now()
+          let horas = new Date(timestamp)
+          setInterval(() => {
+            this.tiempo = horas.getHours()+":"+horas.getMinutes()+":"+horas.getSeconds()
+            horas.setSeconds( horas.getSeconds()-1)
+          }, 1000);
+          this.relojActivo = true
         }
       },
       apuntarse (){
