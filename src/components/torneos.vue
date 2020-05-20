@@ -17,7 +17,7 @@
       </div>
     </section>
     <section class="row">
-      <cardTorneo class="cardTorneo col-lg-2 col-sm-4 col-12 p-0" v-for="torneo in this.listaTorneos" :torneo="torneo" @apuntarse="apuntarseTorneo"></cardTorneo>
+      <cardTorneo class="cardTorneo col-lg-2 col-sm-4 col-12 p-0" v-for="torneo in this.listaTorneos" :torneo="torneo"></cardTorneo>
     </section>
   </section>
 
@@ -50,9 +50,6 @@
       this.conexion.off("resultadoTorneos")
     },
     methods: {
-      apuntarseTorneo(idTorneo) {
-        this.conexion.emit('apuntarseTorneo',{idTorneo:idTorneo,nickJugador:this.user.nick})
-      }
     },
     computed: {
       listaTorneos:function(){

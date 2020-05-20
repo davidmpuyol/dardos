@@ -5,7 +5,13 @@
       <h2 id="tituloTorneo">{{datosTorneo.nombre}}</h2>
     </section>
     <article id="datos" class="container pt-5">
-      <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
+      <div class="d-flex align-items-center justify-content-between">
+        <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
+        <md-button class="md-raised b-0" @click="this.apuntarse">Apuntarse Torneo</md-button>
+      </div>
+      <div class="alert " role="alert">
+        {{textoAlert}}
+      </div>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
       <md-list id="listaJugadores" class="md-double-line border">
         <md-list-item v-for="jugador in this.datosTorneo.jugadores">
@@ -24,21 +30,37 @@
 
   export default  {
     name: 'detalle-torneo',
-    props: ["id","conexion"],
+    props: ["id","conexion","user"],
     beforeMount () {
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         console.log(result)
       })
+      this.conexion.on("respuestaApuntarse",(result) => {
+        if(result[1]){
+          $(".alert").addClass("alert-success")
+          this.textoAlert = result[1]
+          this.$forceUpdate()
+        } else {
+          $(".alert").addClass("alert-danger")
+          this.textoAlert = result[0]
+        }
+        $(".alert").show(500)
+        setTimeout(() => {
+          $(".alert").hide(500)
+        }, 3000);
+      })
       this.conexion.emit("detalleTorneo",this.id)
     },
     data () {
       return {
-        torneo: {}
+        torneo: {},
+        textoAlert: "Texto ejemplo"
       }
     },
     updated () {
       console.log(this.datosTorneo)
+      this.conexion.emit("detalleTorneo",this.id)
     },
     methods: {
       abrirLista() {
@@ -47,6 +69,9 @@
         } else {
           $('#listaJugadores').show(600);
         }
+      },
+      apuntarse (){
+        this.conexion.emit('apuntarseTorneo',{idTorneo:this.id,nickJugador:this.user.nick})
       }
     },
     computed: {
@@ -67,6 +92,9 @@
 <style scoped lang="css">
   .detalle-torneo {
 
+  }
+  .alert{
+    display: none;
   }
   #fondotorneo{
     width: 100%;

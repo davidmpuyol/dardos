@@ -5,7 +5,6 @@
     <div class="card-body">
       <h5 class="card-title">{{torneo.nombre}}</h5>
       <md-button class="md-raised b-0" @click="this.detalle">Ver detalles</md-button>
-      <md-button class="md-raised b-0" @click="this.apuntarse">Apuntarse Torneo</md-button>
     </div>
   </div>
 
@@ -28,9 +27,6 @@
       detalle (){
         this.$router.push({ path: 'torneos/'+this.torneo._id})
       },
-      apuntarse (){
-        this.$emit('apuntarse',this.torneo._id)
-      }
     },
     computed: {
       imagenTorneo() {
