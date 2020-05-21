@@ -7,9 +7,9 @@
     <article id="datos" class="container pt-5">
       <div class="d-flex align-items-center justify-content-between">
         <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
-        <md-button class="md-raised b-0" @click="this.apuntarse">Apuntarse Torneo</md-button>
+        <md-button class="md-raised b-0" @click="this.apuntarse" >Apuntarse Torneo</md-button>
       </div>
-      <p><strong>Tiempo restante antes del cierre: {{tiempo}}</strong></p>
+      <p><strong>Fecha de cierre: </strong>{{tiempo}}</p>
       <div class="alert " role="alert">
         {{textoAlert}}
       </div>
@@ -36,23 +36,21 @@
       console.log(this.relojActivo)
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
-        if(!this.relojActivo)
-          this.crearReloj()
-        console.log(result)
+        if(result.fecha > Date.now()){
+          let fecha = new Date(result.fecha)
+          this.tiempo = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds()
+        }else{
+          this.tiempo = "Cerrado"
+          this.desabilitado = true
+        }
       })
       this.conexion.on("respuestaApuntarse",(result) => {
         if(result[1]){
-          $(".alert").addClass("alert-success")
-          this.textoAlert = result[1]
+          this.mostrarAlerta(result[1],"alert-success")
           this.conexion.emit("detalleTorneo",this.id)
         } else {
-          $(".alert").addClass("alert-danger")
-          this.textoAlert = result[0]
+          this.mostrarAlerta(result[0],"alert-danger")
         }
-        $(".alert").show(500)
-        setTimeout(() => {
-          $(".alert").hide(500)
-        }, 3000);
       })
       this.conexion.emit("detalleTorneo",this.id)
     },
@@ -62,6 +60,7 @@
         textoAlert: "Texto ejemplo",
         tiempo: 0,
         relojActivo: false,
+        desabilitado: false
       }
     },
     updated () {
@@ -75,7 +74,7 @@
           $('#listaJugadores').show(600);
         }
       },
-      crearReloj() {
+      /*crearReloj() {
         if((this.torneo.fecha-Date.now())>0){
           console.log("entra en el if")
           let timestamp=this.torneo.fecha-Date.now()
@@ -86,9 +85,21 @@
           }, 1000);
           this.relojActivo = true
         }
-      },
+      },*/
       apuntarse (){
-        this.conexion.emit('apuntarseTorneo',{idTorneo:this.id,nickJugador:this.user.nick})
+        if(!this.desabilitado)
+          this.conexion.emit('apuntarseTorneo',{idTorneo:this.id,nickJugador:this.user.nick})
+        else{
+          this.mostrarAlerta("La fase de ingreso esta cerrada","alert-danger")
+        }
+      },
+      mostrarAlerta(texto,clase){
+        $(".alert").addClass(clase)
+        this.textoAlert = texto
+        $(".alert").show(500)
+        setTimeout(() => {
+          $(".alert").hide(500)
+        }, 3000);
       }
     },
     computed: {
