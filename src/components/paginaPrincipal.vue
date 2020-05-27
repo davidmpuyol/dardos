@@ -76,10 +76,10 @@
         <h2 class="text-center mt-2 mb-2">Proximos torneos</h2>
         <section class="contenedorCarousel">
           <div class="carouselTorneos">
-            <div class="torneoC" id="torneo1"></div>
-            <div class="torneoC" id="torneo2"></div>
-            <div class="torneoC" id="torneo3"></div>
-            <div class="torneoC" id="torneo4"></div>
+            <div class="torneoC" id="torneo1" v-for="torneo in torneos" :style="{background:'url('+tournamentURLimg+torneo.img+')'}">
+              <md-button class="md-raised b-0" @click="$router.push({ path: 'torneos/'+torneo._id})">Ver detalles</md-button>
+              <h3 class="text-center mt-4 text-white"> {{ torneo.nombre }} </h3>
+            </div>
           </div>
         </section>
         <div class="modal fade modal-invitar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -132,6 +132,12 @@
     components:{
       userChat
     },    
+    beforeMount(){
+      this.socket.on('resultTorneosCarousel',(result)=>{
+        this.torneos = result;
+      })
+      this.socket.emit("getTorneosCarousel");
+    },
     mounted () {
       console.log('se monta')
       switch (this.user.tipo_usuario) {
@@ -260,6 +266,44 @@
             if(event.keyCode == '13')
               this.enviarMensaje(this.socket)
         })
+        this.montado = true
+        setTimeout(() => {
+          this.iniciarCarousel();
+        }, 1000);
+      },
+    beforeDestroy(){
+      this.conexion.off("userConected")
+      this.conexion.off("reenvio")
+      this.conexion.off("listaUsuarios")
+      this.conexion.off("usuarioDesc")
+      this.conexion.off("menPriv")
+      this.conexion.off("cambEstado")
+      this.conexion.off("invitacion")
+      this.conexion.off("invitacionAceptada")
+    },
+    data () {
+      return {
+        chat: Object(),
+        usr: '',
+        ready: false,
+        roomActual: 'general',
+        usuarios: null,
+        socket : this.conexion,
+        jugadorInvitar: null,
+        textoInvitar: null,
+        textoInvitado: null,
+        notificacion: Object(),
+        montado: false,
+        badge: null,
+        badge_label:"",
+        torneos: [],
+      }
+    },
+    updated() {
+      console.log(this.conexion);
+    },
+    methods: {
+      iniciarCarousel() {
         $('.carouselTorneos').slick({
           dots: true,
           infinite: false,
@@ -287,39 +331,7 @@
             // instead of a settings object
           ]
         });
-        this.montado = true
       },
-    beforeDestroy(){
-      this.conexion.off("userConected")
-      this.conexion.off("reenvio")
-      this.conexion.off("listaUsuarios")
-      this.conexion.off("usuarioDesc")
-      this.conexion.off("menPriv")
-      this.conexion.off("cambEstado")
-      this.conexion.off("invitacion")
-      this.conexion.off("invitacionAceptada")
-    },
-    data () {
-      return {
-        chat: Object(),
-        usr: '',
-        ready: false,
-        roomActual: 'general',
-        usuarios: null,
-        socket : this.conexion,
-        jugadorInvitar: null,
-        textoInvitar: null,
-        textoInvitado: null,
-        notificacion: Object(),
-        montado: false,
-        badge: null,
-        badge_label:""
-      }
-    },
-    updated() {
-      console.log(this.conexion);
-    },
-    methods: {
       mostrarMensaje: function(msg,mensajePropio){
           let mensaje = $('<li>');
           let texto = $('<p>');
@@ -467,6 +479,9 @@
             //Crea la url de la imagen del usuario
             return "http://localhost:3000/usersIcon/"+this.user.img
         },
+      tournamentURLimg (){
+        return "http://localhost:3000/imgApp/"
+      }
     }
 }
 
