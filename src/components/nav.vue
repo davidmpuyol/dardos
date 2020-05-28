@@ -209,7 +209,7 @@
     computed: {
       userImage:function(){
             //Crea la url de la imagen del usuario
-            return "http://localhost:3000/usersIcon/"+this.img
+            return "http://localhost:3000/img/usuarios/"+this.img
         },
       alertas:function(){
         let alertas={}
