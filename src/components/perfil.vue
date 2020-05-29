@@ -43,7 +43,7 @@
                   <input type="text" class="form-control" id="nick" name="text" placeholder="Introduce tu nuevo nick" v-model:value="modalNick" required>
                 </div>
                 <div class="form-group">
-                  <input type="file" id="siofu_input" />
+                  <input type="file" class="inputTexto" id="siofu_input" /> <i :class="iconoSubirArchivo"></i>
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control" id="nick" name="text" placeholder="Introduce tu contraseña para validar" v-model:value="pass" required>
@@ -78,11 +78,13 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
             let extension = "."+event.file.name.split(".")[1]
             event.file.meta.path = "/usuarios/"+this.user.nick+extension;
             event.file.meta.nombre = this.user.nick+extension;
+            this.iconoSubirArchivo = "far fa-times-circle text-danger"
             console.log(event)
         });
         this.conexion.on("imagenSubida",(nombre)=>{
           this.nuevaImagen = nombre;
           this.subida = true
+          this.iconoSubirArchivo = "fas fa-check-circle text-success"
         })
         this.conexion.on('respuestaCambioDatos',(result) => {
           if(result[1]){
@@ -118,6 +120,7 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         cargado:false,
         datosUsuario: {img:"null"},
         modalNick: this.nick,
+        iconoSubirArchivo: "",
         subeImagen: false,
         subida: false,
         nuevaImagen : "",

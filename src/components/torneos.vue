@@ -2,7 +2,8 @@
 
   <section class="torneos">
     <section v-if="this.user.tipo_usuario >= 2">
-
+      <md-button v-on:click="this.modalCrearTorneo" class="md-raised md-primary" id="botonCrearTorneo">Crear torneo</md-button>
+      <!-- <md-button @click="this.misTorneos" class="md-raised md-primary" id="botonMisTorneos">Mis torneos</md-button> -->
     </section>
     <section id="buscador" class="m-3 m-md-4 m-lg-5">
       <div class="input-group">
@@ -19,12 +20,60 @@
     <section class="row">
       <cardTorneo class="cardTorneo col-lg-2 col-sm-4 col-12 p-0" v-for="torneo in this.listaTorneos" :torneo="torneo"></cardTorneo>
     </section>
+    <div class="modal fade modal-crearTorneo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" v-if="this.user.tipo_usuario >= 2">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header mb-2">
+            <h1 class="modal-title">Creat Torneo</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="post" v-on:submit.prevent='crearTorneo()'>
+              <div class="form-group">
+                <label for="nick">Nombre del torneo</label>
+                <input type="text" class="form-control" id="nombreTorneo" placeholder="Introduce el nombre del torneo" v-model:value="nombreTorneo" required>
+              </div>
+              <div class="form-group">
+                <label for="nick">Numero de jugadores</label>
+                <input type="number" class="form-control" id="numeroDeParticipantes" max="32" placeholder="Introduce el numero de participantes" v-model:value="nParticipantes" required>
+              </div>
+              <div class="form-group">
+                <label for="nick">Fecha de cierre de inscripción</label>
+                <date-picker v-model="date" :config="options"></date-picker>
+              </div>
+              <div class="form-group">
+                <input type="file" :class="habilitarSubirFoto" id="siofu_input" /><i :class="iconoSubirArchivo"></i>
+              </div>
+              <div class="alert " role="alert">
+                {{textoAlert}}
+              </div>
+              <button type="submit">Enviar</button>
+            </form>
+          </div>  
+        </div>
+      </div>
+    </div>
+    <div class="modal fade modal-misTorneos" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" v-if="this.user.tipo_usuario >= 2">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header mb-2">
+            <h1 class="modal-title">Registro</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+          </div>
+          <div class="modal-body">
+            
+          </div>  
+        </div>
+      </div>
+    </div>
   </section>
 
 </template>
 
 <script lang="js">
-  import cardTorneo from "./cardTorneo.vue"
+  import cardTorneo from "./cardTorneo.vue";
+  import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.js';
+
   export default  {
     name: 'torneos',
     props: ['conexion','user'],
@@ -32,24 +81,67 @@
       cardTorneo
     }, 
     mounted () {
+      console.log($.fn)
       //Los torneos tipo 2 son los torneos oficiales y los torneo tipo 1 son los de la comunidad
       this.conexion.on('resultadoTorneos',(resultado)=>{
         this.torneos = resultado
         console.log(this.torneos)
       })
-      this.conexion.emit("getTorneos")
+      this.conexion.emit("getTorneos");
+      var uploader = new SocketIOFileUpload(this.conexion);
+      uploader.listenOnInput(document.getElementById("siofu_input"));
+      //Añade metadatos necesarios en el servidor para colocar la imagen en su sitio y ponerle el nombre correspondiente
+      uploader.addEventListener("start", (event) => {
+          this.subeImagen = true;
+          let extension = "."+event.file.name.split(".")[1]
+          event.file.meta.path = "/torneos/"+this.user.nick+Math.round(Math.random()*10)+this.nombreTorneo.replace(" ","")+extension;
+          event.file.meta.nombre = this.user.nick+Math.round(Math.random()*10)+this.nombreTorneo.replace(" ","")+extension;
+          this.iconoSubirArchivo = "far fa-times-circle text-danger"
+          console.log(event)
+      });
+      this.conexion.on("imagenSubida",(nombre)=>{
+        this.nuevaImagen = nombre;
+        this.subida = true
+        this.iconoSubirArchivo = "fas fa-check-circle text-success"
+      })
     },
     data () {
       return {
         torneos: [],
         fNombre: "",
+        iconoSubirArchivo: "",
         fTipo:"",
+        subeImagen: false,
+        subida: false,
+        nuevaImagen: "",
+        nombreTorneo:"",
+        nParticipantes: 0,
+        textoAlert:"",
+        date: new Date(),
+        options: {
+          format: 'DD/MM/YYYY h:mm a',
+          useCurrent: false,
+        }    
       }
     },
     beforeDestroy(){
       this.conexion.off("resultadoTorneos")
     },
     methods: {
+      crearTorneo(){
+        let datos = {};
+        datos.user = this.user.nick
+        datos.nombre=this.nombreTorneo
+        datos.img = this.nuevaImagen
+        datos.fecha = this.date.getTime()
+        /*this.conexion.emit("crearTorneo", datos)*/
+      },
+      modalCrearTorneo(){
+        $('.modal-crearTorneo').modal("show");
+      },
+      misTorneos(){
+
+      },
     },
     computed: {
       listaTorneos:function(){
@@ -62,6 +154,12 @@
               return torneo
           }
         })
+      },
+      habilitarSubirFoto(){
+        if(this.nombreTorneo.length == 0)
+          return "inputTexto disabled"
+        else
+          return "inputTexto"
       }
     }
 }
@@ -75,6 +173,9 @@
   }
   .cardTorneo{
     box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.02);
+  }
+  .disabled{
+    pointer-events: none;
   }
   #inputBuscador{
     width: 80%;

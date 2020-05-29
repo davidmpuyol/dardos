@@ -188,6 +188,9 @@ nav li a{
 .texto-claro{
     color: white;
 }
+.inputTexto{
+    color: transparent;
+}
 #mensajes{
     height: 100%;
     border-right: #1c23217c solid 1px;
