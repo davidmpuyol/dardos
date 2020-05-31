@@ -1,5 +1,4 @@
 <template lang="html">
-
   <main>
       <main class="container-fluid">
         <h1 id="tituloChat" class="mt-1 mb-1 text-center">Chat General</h1>
@@ -346,7 +345,7 @@
       },
       cambiarEstado: function(){
           //inicializa el primer usuario de la lista con el usuario logeado
-          console.log("hace cambiar estado")
+          console.log("hace cambiar estado");
           this.conexion.emit('checked',this.user.nick);
       },
       enviarMensaje: function(socket){

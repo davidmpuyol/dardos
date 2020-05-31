@@ -56,6 +56,42 @@
             </video>
             <video id="local" class="md-elevation-5" autoplay muted></video>
           </div>
+          <!--Modal para elegir las partidas -->
+          <div class="modal fade modal-datos" id="modalDatosPartida" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content p-2">
+                  <div class="modal-header mb-2">
+                    <h1 class="modal-title">Ajustes de juego</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="" method="post" v-on:submit.prevent='enviarDatosPartida()'>
+                      <div class="form-group">
+                        <label for="nPartidas">Nº de partidas</label>
+                        <select class="form-control" name="nPartidas" id="nPartidas">
+                          <option>1</option>
+                          <option>3</option>
+                          <option>5</option>
+                          <option>7</option>
+                          <option>9</option>
+                        </select>
+                        <div class="form-group">
+                          <label for="jugadorSalida">¿Qué Jugador sale?</label>
+                          <select class="form-control" name="jugadorSalida" id="jugadorSalida">
+                            <option id="selectSalida1"></option>
+                            <option id="selectSalida2"></option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                        <p id="errorLogin">{{ errorLogin }}</p>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
       </md-app-content>
   </md-app>
@@ -64,6 +100,8 @@
 <script>
 import io from 'socket.io-client';
 import adapter from 'webrtc-adapter';
+import JQuery from 'jquery';
+let $ = JQuery;
 export default {
   name: 'Game',
   props: ['conexion','user'],
@@ -92,6 +130,8 @@ export default {
         this.socket.emit('candidate', event.candidate,this.contrincante);
       }
     };
+    $('#selectSalida1').html(this.usuario);
+    $('#selectSalida2').html(this.contrincante);
     /*
     this.pc.ontrack = (event) => {
       //if (remoteVideo.srcObject) return;
@@ -111,6 +151,10 @@ export default {
       }
     })
 
+    this.socket.on('AjustarPartida', ()=>{
+      this.modalOpcionesPartida();
+    })
+
     this.socket.on('offer',async (description)=>{
       await this.pc.setRemoteDescription(description)
       .then(() => this.pc.createAnswer())
@@ -125,9 +169,9 @@ export default {
     });
     this.socket.on('answer', (description)=>{
       this.pc.setRemoteDescription(description);
-      this.socket.emit('comenzarPartida',this.usuario, this.contrincante);
+      this.modalOpcionesPartida();
+      //this.socket.emit('comenzarPartida',this.usuario, this.contrincante);
     });
-
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
       this.partida = datos;
@@ -147,6 +191,7 @@ export default {
       }
     })
     this.getUserMediaDevices();
+    //this.socket.emit('preparado',this.contrincante);
   },
   data () {
     return {
@@ -218,6 +263,15 @@ export default {
           .catch(this.getUserMediaError);
         //}
       //}
+    },
+    modalOpcionesPartida(){
+      $('#modalDatosPartida').appendTo('body').modal('show');
+    },
+    enviarDatosPartida(){
+      let usuarioSalida = document.getElementById('jugadorSalida').value;
+      let nPartidas = document.getElementById('nPartidas').value;
+      $('#modalDatosPartida').modal('hide');
+      this.socket.emit('comenzarPartida',this.usuario, this.contrincante, {nPartidas: nPartidas, salida: usuarioSalida});
     },
     getUserMediaSuccess(stream){
       this.localStream = stream;
