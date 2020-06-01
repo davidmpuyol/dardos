@@ -17,14 +17,14 @@
         </div>
       </div>
     </section>
-    <section class="row">
+    <section class="row m-0">
       <cardTorneo class="cardTorneo col-lg-2 col-sm-4 col-12 p-0" v-for="torneo in this.listaTorneos" :torneo="torneo"></cardTorneo>
     </section>
     <div class="modal fade modal-crearTorneo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" v-if="this.user.tipo_usuario >= 2">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header mb-2">
-            <h1 class="modal-title">Creat Torneo</h1>
+            <h1 class="modal-title">Crear Torneo</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
           </div>
           <div class="modal-body">
@@ -42,12 +42,12 @@
                 <date-picker v-model="date" :config="options"></date-picker>
               </div>
               <div class="form-group">
-                <input type="file" :class="habilitarSubirFoto" id="siofu_input" /><i :class="iconoSubirArchivo"></i>
+                <input type="file" :class="habilitarSubirFoto" id="siofu_input"/><i :class="iconoSubirArchivo"></i>
               </div>
               <div class="alert " role="alert">
                 {{textoAlert}}
               </div>
-              <button type="submit">Enviar</button>
+              <md-button type="submit" :class="habilitarEnviar">Enviar</md-button>
             </form>
           </div>  
         </div>
@@ -81,7 +81,6 @@
       cardTorneo
     }, 
     mounted () {
-      console.log($.fn)
       //Los torneos tipo 2 son los torneos oficiales y los torneo tipo 1 son los de la comunidad
       this.conexion.on('resultadoTorneos',(resultado)=>{
         this.torneos = resultado
@@ -93,9 +92,10 @@
       //Añade metadatos necesarios en el servidor para colocar la imagen en su sitio y ponerle el nombre correspondiente
       uploader.addEventListener("start", (event) => {
           this.subeImagen = true;
+          let numeroRandom = Math.round(Math.random()*100)
           let extension = "."+event.file.name.split(".")[1]
-          event.file.meta.path = "/torneos/"+this.user.nick+Math.round(Math.random()*10)+this.nombreTorneo.replace(" ","")+extension;
-          event.file.meta.nombre = this.user.nick+Math.round(Math.random()*10)+this.nombreTorneo.replace(" ","")+extension;
+          event.file.meta.path = "/torneos/"+this.user.nick+numeroRandom+this.nombreTorneo.replace(/ /g,"")+extension;
+          event.file.meta.nombre = this.user.nick+numeroRandom+this.nombreTorneo.replace(/ /g,"")+extension;
           this.iconoSubirArchivo = "far fa-times-circle text-danger"
           console.log(event)
       });
@@ -103,6 +103,14 @@
         this.nuevaImagen = nombre;
         this.subida = true
         this.iconoSubirArchivo = "fas fa-check-circle text-success"
+      })
+      this.conexion.on("respuestaRegistrarseTorneo",(result)=>{
+        if(result[1]){
+          this.mostrarAlerta(result[1],"alert-success")
+          this.conexion.emit("getTorneos")
+        } else {
+          this.mostrarAlerta(result[0],"alert-danger")
+        }
       })
     },
     data () {
@@ -119,7 +127,7 @@
         textoAlert:"",
         date: new Date(),
         options: {
-          format: 'DD/MM/YYYY h:mm a',
+          format: 'YYYY-MM-DD h:mm a',
           useCurrent: false,
         }    
       }
@@ -131,16 +139,28 @@
       crearTorneo(){
         let datos = {};
         datos.user = this.user.nick
-        datos.nombre=this.nombreTorneo
+        datos.nombre= this.nombreTorneo
         datos.img = this.nuevaImagen
-        datos.fecha = this.date.getTime()
-        /*this.conexion.emit("crearTorneo", datos)*/
+        datos.fecha = Date.parse(this.date)
+        datos.tipoUsuario = this.user.tipo_usuario
+        datos.maxJugadores = this.nParticipantes
+        console.log(datos)
+        console.log(typeof this.date)
+        this.conexion.emit("crearTorneo", datos)
       },
       modalCrearTorneo(){
         $('.modal-crearTorneo').modal("show");
       },
       misTorneos(){
 
+      },
+      mostrarAlerta(texto,clase){
+        $(".alert").addClass(clase)
+        this.textoAlert = texto
+        $(".alert").show(500)
+        setTimeout(() => {
+          $(".alert").hide(500)
+        }, 3000);
       },
     },
     computed: {
@@ -160,6 +180,12 @@
           return "inputTexto disabled"
         else
           return "inputTexto"
+      },
+      habilitarEnviar(){
+        if(!this.subida)
+          return "md-raised md-primary disabled"
+        else
+          return "md-raised md-primary"
       }
     }
 }

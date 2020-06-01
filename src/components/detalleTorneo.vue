@@ -44,7 +44,7 @@
           this.desabilitado = true
         }
       })
-      this.conexion.on("respuestaCambiarDatos",(result) => {
+      this.conexion.on("respuestaApuntarse",(result) => {
         if(result[1]){
           this.mostrarAlerta(result[1],"alert-success")
           this.conexion.emit("detalleTorneo",this.id)
@@ -93,11 +93,19 @@
           this.mostrarAlerta("La fase de ingreso esta cerrada","alert-danger")
         }
       },
+      mostrarAlerta(texto,clase){
+        $(".alert").addClass(clase)
+        this.textoAlert = texto
+        $(".alert").show(500)
+        setTimeout(() => {
+          $(".alert").hide(500)
+        }, 3000);
+      },
     },
     computed: {
       cssVars() {
         return {
-          '--bg-img': "url(http://localhost:3000/imgApp/"+this.torneo.img+")",
+          '--bg-img': "url(http://localhost:3000/img/torneos/"+this.torneo.img+")",
         }
       },
       datosTorneo() {

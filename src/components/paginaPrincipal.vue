@@ -479,7 +479,7 @@
             return "http://localhost:3000/img/usuarios/"+this.user.img
         },
       tournamentURLimg (){
-        return "http://localhost:3000/imgApp/"
+        return "http://localhost:3000/img/torneos/"
       }
     }
 }
@@ -490,22 +490,6 @@
 <style scoped lang="css">
   .pagina-principal {
 
-  }
-  #torneo1{
-    background: url("../assets/bg1.jpg");
-    background-size: cover;
-  }
-  #torneo2{
-      background: url("../assets/bg2.jpg");
-      background-size: cover;
-  }
-  #torneo3{
-      background: url("../assets/bg3.jpg");
-      background-size: cover;
-  }
-  #torneo4{
-      background: url("../assets/bg4.jpg");
-      background-size: cover;
   }
 #checkboxLocal {
   opacity: 0;

@@ -30,7 +30,7 @@
     },
     computed: {
       imagenTorneo() {
-        return "http://localhost:3000/imgApp/"+this.torneo.img
+        return "http://localhost:3000/img/torneos/"+this.torneo.img
       }
     }
 }
