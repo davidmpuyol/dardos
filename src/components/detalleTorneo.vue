@@ -13,11 +13,12 @@
       <div class="alert " role="alert">
         {{textoAlert}}
       </div>
+      <div class="my_gracket"></div>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
       <md-list id="listaJugadores" class="md-double-line border">
         <md-list-item v-for="jugador in this.datosTorneo.jugadores">
-          <label>{{ jugador }}</label>
-          <md-button class="ml-2 md-icon-button md-list-action" @click="$router.push({ path: `/perfil/${jugador}` })">
+          <label>{{ jugador.nick }}</label>
+          <md-button class="ml-2 md-icon-button md-list-action" @click="$router.replace({ path: `/perfil/${jugador.nick}` })">
             <md-icon>account_circle</md-icon>
           </md-button>
         </md-list-item>
@@ -28,12 +29,32 @@
 </template>
 
 <script lang="js">
-
   export default  {
     name: 'detalle-torneo',
     props: ["id","conexion","user"],
     mounted () {
-      console.log(this.relojActivo)
+      /*console.log(this.relojActivo)
+      var singleElimination = {
+        "teams": [              // Matchups
+          ["Team 1", "Team 2"], // First match
+          ["Team 3", "Team 4"]  // Second match
+        ],
+        "results": [            // List of brackets (single elimination, so only one bracket)
+          [                     // List of rounds in bracket
+            [                   // First round in this bracket
+              [1, 2],           // Team 1 vs Team 2
+              [3, 4]            // Team 3 vs Team 4
+            ],
+            [                   // Second (final) round in single elimination bracket
+              [5, 6],           // Match for first place
+              [7, 8]            // Match for 3rd place
+            ]
+          ]
+        ]
+      }
+      $('.mi_gracket').bracket({
+        init: singleElimination
+      })*/
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         if(result.fecha > Date.now()){
@@ -53,6 +74,10 @@
         }
       })
       this.conexion.emit("detalleTorneo",this.id)
+    },
+    beforeDestroy(){
+      this.conexion.off("resultadoTorneo")
+      this.conexion.off("respuestaApuntarse")
     },
     data () {
       return {
@@ -94,6 +119,8 @@
         }
       },
       mostrarAlerta(texto,clase){
+        $(".alert").removeClass("alert-success")
+        $(".alert").removeClass("alert-danger")
         $(".alert").addClass(clase)
         this.textoAlert = texto
         $(".alert").show(500)
@@ -121,6 +148,18 @@
   .detalle-torneo {
 
   }
+  canvas {  }
+  .g_gracket { width: 9999px; background-color: #fafafa; padding: 55px 15px 5px; line-height: 100%; position: relative; overflow: hidden;}
+  .g_round { float: left; margin-right: 70px; }
+  .g_game { position: relative; margin-bottom: 15px; }
+  .g_gracket h3 { margin: 0; padding: 10px 8px 8px; font-size: 18px; font-weight: normal; color: #fff}
+  .g_team { background: #3597AE; }
+  .g_team:last-child {  background: #FCB821; }
+  .g_round:last-child { margin-right: 20px; }
+  .g_winner { background: #444; }
+  .g_winner .g_team { background: none; }
+  .g_current { cursor: pointer; background: #A0B43C!important; }
+  .g_round_label { top: -5px; font-weight: normal; color: #CCC; text-align: center; font-size: 18px; }
   .alert{
     display: none;
   }

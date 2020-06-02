@@ -30,7 +30,6 @@ import '@fortawesome/fontawesome-free/js/all.js'
  
 window.$ = $;
 Vue.config.productionTip = false
-
 Vue.use(VueRouter)
 Vue.use(VueMaterial)
 $().extend(true, $.fn.datetimepicker.defaults, {

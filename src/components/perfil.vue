@@ -89,7 +89,6 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         this.conexion.on('respuestaCambioDatos',(result) => {
           if(result[1]){
             this.mostrarAlerta(result[1],"alert-success");
-            this.conexion.emit("detalleTorneo",this.id);
             this.pass = "";
             setTimeout(() => {
               $('.modal-perfil').modal("hide");
