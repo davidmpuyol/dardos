@@ -8,17 +8,17 @@ import 'slick-carousel'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import JQuery from 'jquery'
+import JQuery from 'jquery/dist/jquery.js'
 var $ = require('jquery');
 import VueRouter from 'vue-router'
 window.$ = JQuery
+window.jQuery= JQuery
 import paginaPrincipal from './components/paginaPrincipal.vue'
 import Game from './components/Game.vue'
 import torneos from './components/torneos.vue'
 import directos from './components/directos.vue'
 import perfil from './components/perfil.vue'
 import detalleTorneo from './components/detalleTorneo.vue'
-import "jquery/src/jquery.js"
 var moment = require('moment');
 moment().format()
 import datePicker from 'vue-bootstrap-datetimepicker';
@@ -27,7 +27,6 @@ import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 Vue.use(datePicker);
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
- 
 window.$ = $;
 Vue.config.productionTip = false
 Vue.use(VueRouter)

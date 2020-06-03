@@ -29,6 +29,8 @@
 </template>
 
 <script lang="js">
+  //import '../assets/jquery.bracket.min.css'
+  //import '../assets/jquery.bracket.min.js'
   export default  {
     name: 'detalle-torneo',
     props: ["id","conexion","user"],
@@ -52,9 +54,11 @@
           ]
         ]
       }
-      $('.mi_gracket').bracket({
-        init: singleElimination
-      })*/
+      $(function() {
+        $('.mi_gracket').bracket({
+          init: singleElimination
+        })
+      })($())*/
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         if(result.fecha > Date.now()){

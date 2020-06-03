@@ -122,8 +122,6 @@
 </template>
 
 <script lang="js">
-  import JQuery from 'jquery'
-  let $ = JQuery
   import io from 'socket.io-client';
   export default  {
     name: 'nav1',
@@ -285,15 +283,19 @@
   @keyframes campana {
     0% {
       transform: rotate(-4deg);	
+      color: rgba(175, 167, 49, 0.384);
     }
     25% {
       transform: rotate(4deg);
+      color: rgba(212, 202, 61, 0.726);
     }
     50% {
-      transform: rotate(-4deg);	
+      transform: rotate(-4deg);
+      color: rgb(219, 209, 59);
     }
     100% {
-      transform: rotate(0deg);	
+      transform: rotate(0deg);
+      color: rgba(212, 202, 61, 0.726);
     }								
   }
 
