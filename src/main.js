@@ -9,7 +9,9 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import JQuery from 'jquery/dist/jquery.js'
-var $ = require('jquery');
+//var $ = require('jquery');
+//import 'jquery-bracket/dist/jquery.bracket.min.js'
+import 'jquery-bracket/dist/jquery.bracket.min.css'
 import VueRouter from 'vue-router'
 window.$ = JQuery
 window.jQuery= JQuery

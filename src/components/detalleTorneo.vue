@@ -13,7 +13,10 @@
       <div class="alert " role="alert">
         {{textoAlert}}
       </div>
-      <div class="my_gracket"></div>
+      <!--<div class="my_bracket"></div>-->
+      <bracket :rounds="rounds">
+            {{ player.name }}
+    </bracket>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
       <md-list id="listaJugadores" class="md-double-line border">
         <md-list-item v-for="jugador in this.datosTorneo.jugadores">
@@ -29,13 +32,44 @@
 </template>
 
 <script lang="js">
-  //import '../assets/jquery.bracket.min.css'
-  //import '../assets/jquery.bracket.min.js'
+  import Bracket from "vue-tournament-bracket";
+  import jQuery from 'jquery/dist/jquery2.js';
+  //let $ = JQuery;
+  //import '../assets/brackets.js';
   export default  {
     name: 'detalle-torneo',
     props: ["id","conexion","user"],
+    components: { Bracket },
     mounted () {
-      /*console.log(this.relojActivo)
+      console.log(this.relojActivo);
+      const rounds = [
+        //Semi finals
+        {
+            games: [
+                {
+
+                    player1: { id: "1", name: "Competitor 1", winner: false },
+                    player2: { id: "4", name: "Competitor 4", winner: true },
+                },
+                {
+
+                    player1: { id: "5", name: "Competitor 5", winner: false },
+                    player2: { id: "8", name: "Competitor 8", winner: true },
+                }
+            ]
+        },
+        //Final
+        {
+            games: [
+                {
+
+                    player1: { id: "4", name: "Competitor 4", winner: false },
+                    player2: { id: "8", name: "Competitor 8", winner: true },
+                }
+            ]
+        }
+    ];
+      /*
       var singleElimination = {
         "teams": [              // Matchups
           ["Team 1", "Team 2"], // First match
@@ -54,11 +88,11 @@
           ]
         ]
       }
-      $(function() {
-        $('.mi_gracket').bracket({
+      window.$(()=>{
+        window.$('.mi_gracket').brackets({
           init: singleElimination
         })
-      })($())*/
+      })*/
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         if(result.fecha > Date.now()){
@@ -89,7 +123,8 @@
         textoAlert: "Texto ejemplo",
         tiempo: 0,
         relojActivo: false,
-        desabilitado: false
+        desabilitado: false,
+        rounds: rounds
       }
     },
     updated () {

@@ -6,11 +6,11 @@
             <div class="md-layout h-100">
               <div v-bind:class="{ sombreado: turno }" class="md-layout-item md-size-40 md-layout">
                 <div class="md-layout md-layout-item md-size-30 d-flex flex-column justify-content-around centrado flex-nowrap">
-                  <span><b>Media: {{partida.local.media}}</b></span>
+                  <span><b>Media: {{miMedia}}</b></span>
                 </div>
                 <div class="md-layout-item md-size-70 d-flex flex-column align-items-center justify-content-around">
                   <span class="md-size-100 centrado">{{ usuario }}</span>
-                  <span class="md-display-3 puntuacion" id="marcador">{{partida.local.puntos}}</span>
+                  <span class="md-display-3 puntuacion" id="marcador">{{misPuntos}}</span>
                 </div><!--
                 <md-list class="lista">
                   <md-list-item v-for="tirada in partida.local.tiradas" :key="tirada">
@@ -21,10 +21,10 @@
                 </md-list>-->
               </div>
               <div class="md-layout-item md-size-20 md-layout">
-                <span class="md-layout-item md-size-100 md-display-1 centrado">{{marcador.local}} - {{marcador.visitante}}</span>
+                <span class="md-layout-item md-size-100 md-display-1 centrado">{{ miMarcador }} - {{ marcadorContrincante }}</span>
                 <div class="md-layout-item md-size-100 md-layout">
                     <div class="md-layout-item md-size-60 md-small-size-100 divInput">
-                        <input type="text" :disabled="turno" v-on:keyup.enter="enter" v-model="input" id="inputPuntos" placeholder="Introduce tu puntuación" autofocus>
+                        <input type="text" :disabled="!turno" v-on:keyup.enter="enter" v-model="input" id="inputPuntos" placeholder="Introduce tu puntuación" autofocus>
                     </div>
                     <div class="md-layout-item md-size-40 md-small-size-100 divInput">
                       <md-button @click="enviarPuntuacion" :disabled="validar" class="md-raised md-primary" id="botonPuntos">Enviar</md-button>
@@ -34,10 +34,10 @@
               <div v-bind:class="{ sombreado: !turno }" class="md-layout-item md-size-40 md-layout">
                 <div class="md-layout md-layout-item md-size-70 d-flex flex-column align-items-center justify-content-around">
                   <span class="md-size-100 centrado">{{contrincante}}</span>
-                  <span class="md-display-3 puntuacion" id="marcador">{{partida.visitante.puntos}}</span>
+                  <span class="md-display-3 puntuacion" id="marcador">{{puntosContrincante}}</span>
                 </div>
                 <div class="md-layout md-layout-item md-size-30 d-flex flex-column justify-content-around centrado flex-nowrap">
-                  <span class="centrado"><b>Media: {{partida.visitante.media}}</b></span>
+                  <span class="centrado"><b>Media: {{mediaContrincante}}</b></span>
                 </div>
                 <!--
                 <md-list class="lista">                 
@@ -57,12 +57,11 @@
             <video id="local" class="md-elevation-5" autoplay muted></video>
           </div>
           <!--Modal para elegir las partidas -->
-          <div class="modal fade modal-datos" id="modalDatosPartida" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal fade modal-datos" id="modalDatosPartida" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content p-2">
                   <div class="modal-header mb-2">
                     <h1 class="modal-title">Ajustes de juego</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
                   </div>
                   <div class="modal-body">
                     <form action="" method="post" v-on:submit.prevent='enviarDatosPartida()'>
@@ -85,9 +84,44 @@
                       </div>
                       <div class="d-flex align-items-center justify-content-between">
                         <button type="submit" class="btn btn-primary">Enviar</button>
-                        <p id="errorLogin">{{ errorLogin }}</p>
                       </div>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Modal fin del juego -->
+              <div class="modal fade modal-datos" id="modalFinDelJuego" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content p-2">
+                  <div class="modal-header mb-2">
+                    <h1 class="modal-title">Fin del Juego!</h1>
+                  </div>
+                  <div class="modal-body">
+                      <div class="row">
+                        <div class="col-12 d-flex align-items-center justify-content-center">
+                          <span class="md-layout-item md-size-100 md-display-1 centrado">{{ miMarcador }} - {{ marcadorContrincante }}</span>
+                        </div>
+                        <div class="col-6 d-flex justify-content-center">
+                          <div class="row">
+                              <div class="col-12">
+                                <h3 class="centrado">{{ usuario }}</h3>
+                                <span class="centrado"><b>Media: {{ miMedia }}</b></span>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-center">
+                           <div class="row">
+                              <div class="col-12">
+                                <h3 class="centrado">{{ contrincante }}</h3>
+                                <span class="centrado"><b>Media: {{ mediaContrincante }}</b></span>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button @click="salir()" type="submit" class="btn btn-primary">Salir</button>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -174,6 +208,7 @@ export default {
     });
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
+      console.log(datos);
       this.partida = datos;
       if(this.partida.turno == this.id){
         document.getElementById("inputPuntos").focus();
@@ -181,6 +216,7 @@ export default {
     })
 
     this.socket.on('ganador',(ganador)=>{
+      console.log('ganador');
       this.marcador[ganador]++;
     })
 
@@ -189,6 +225,11 @@ export default {
       if(this.partida.turno == this.id){
         document.getElementById("inputPuntos").focus();
       }
+    })
+    this.socket.on('findeljuego', (datos)=>{
+      this.partida = datos;
+      console.log('Fin del juego');
+      $('#modalFinDelJuego').appendTo('body').modal('show');
     })
     this.getUserMediaDevices();
     //this.socket.emit('preparado',this.contrincante);
@@ -241,6 +282,9 @@ export default {
     }
   },
   methods: {
+    salir(){
+      window.close();
+    },
     enviarPuntuacion(){
       let datos = {
         puntos: parseInt(this.input),
@@ -248,7 +292,7 @@ export default {
         idPartida: this.partida.idPartida,
       }
       console.log(datos);
-      this.socket.emit('tirada',datos);
+      this.socket.emit('tirada',datos, this.usuario, this.contrincante);
       this.input = null;
     },
     async getUserMediaDevices(){
@@ -311,11 +355,61 @@ export default {
       return false;
     },
     turno(){
-      return (this.partida.turno) ? this.id==this.partida.turno ? false : true : true;
+      return (this.partida.turno) ? this.usuario != this.partida.turno ? false : true : true;
     },
     textoTurno(){
-      return (this.partida.turno) ? this.id==this.partida.turno ? "Es tu turno, introduce tu puntuación" : "Espera a que el oponente tire" : "cargando";
+      return (this.partida.turno) ? this.usuario==this.partida.turno ? "Es tu turno, introduce tu puntuación" : "Espera a que el oponente tire" : "cargando";
+    },
+    miMedia(){
+      if(this.partida[this.usuario]){
+        return this.partida[this.usuario].media
+      }
+      else{
+        return 0;
+      }
+    },
+    mediaContrincante(){
+      if(this.partida[this.contrincante]){
+        return this.partida[this.contrincante].media
+      }
+      else{
+        return 0;
+      }
+    },
+    misPuntos(){
+      if(this.partida[this.usuario]){
+        return this.partida[this.usuario].puntos
+      }
+      else{
+        return 501;
+      }
+    },
+    puntosContrincante(){
+      if(this.partida[this.contrincante]){
+        return this.partida[this.contrincante].puntos
+      }
+      else{
+        return 501;
+      }
+    },
+    miMarcador(){
+      if(this.partida[this.usuario]){
+        return this.partida[this.usuario].marcador
+      }
+      else{
+        return 0;
+      }
+    },
+    marcadorContrincante(){
+      if(this.partida[this.contrincante]){
+        return this.partida[this.contrincante].marcador
+      }
+      else{
+        return 0;
+      }
     }
+
+    
   }
 }
 </script>
