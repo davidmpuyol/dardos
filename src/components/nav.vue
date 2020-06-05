@@ -1,7 +1,7 @@
 <template lang="html">
   <main>
     <nav class="navbar navbar-expand-md navbar-dark">
-        <a class="navbar-brand" href="#">Logo</a>
+        <a class="navbar-brand" href="#"><img src="../assets/logo.png" class="logo"/></a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -229,6 +229,10 @@
   }
   nav{
     background-color:  #30323d;
+  }
+  .logo{
+    height: 32px;
+    width: 32px;
   }
   #navuser{
     background-color:rgb(76, 79, 95) ;

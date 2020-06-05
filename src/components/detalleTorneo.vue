@@ -14,9 +14,11 @@
         {{textoAlert}}
       </div>
       <!--<div class="my_bracket"></div>-->
-      <bracket :rounds="rounds">
-            {{ player.name }}
-    </bracket>
+      <bracket v-if="rounds != []" :rounds="rounds">
+          <template slot="player" slot-scope="player">
+            {{ player.player.name }}
+          </template>
+     </bracket>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
       <md-list id="listaJugadores" class="md-double-line border">
         <md-list-item v-for="jugador in this.datosTorneo.jugadores">
@@ -33,7 +35,6 @@
 
 <script lang="js">
   import Bracket from "vue-tournament-bracket";
-  import jQuery from 'jquery/dist/jquery2.js';
   //let $ = JQuery;
   //import '../assets/brackets.js';
   export default  {
@@ -42,65 +43,61 @@
     components: { Bracket },
     mounted () {
       console.log(this.relojActivo);
-      const rounds = [
+      this.rounds = [
         //Semi finals
         {
-            games: [
+           games: [
                 {
 
-                    player1: { id: "1", name: "Competitor 1", winner: false },
-                    player2: { id: "4", name: "Competitor 4", winner: true },
+                    player1: { id: "1", name: "Xoquiitoo", winner: true },
+                    player2: { id: "2", name: "Alberto", winner: false },
                 },
                 {
 
-                    player1: { id: "5", name: "Competitor 5", winner: false },
-                    player2: { id: "8", name: "Competitor 8", winner: true },
-                }
+                    player1: { id: "3", name: "Pedrito", winner: false },
+                    player2: { id: "4", name: "LauraM", winner: true },
+                },
+                {
+
+                    player1: { id: "5", name: "Monica"},
+                    player2: { id: "6", name: "Eduardo"},
+                },
             ]
         },
-        //Final
         {
             games: [
                 {
 
-                    player1: { id: "4", name: "Competitor 4", winner: false },
-                    player2: { id: "8", name: "Competitor 8", winner: true },
+                    player1: { id: "1", name: "Xoquiitoo", winner: false },
+                    player2: { id: "4", name: "LauraM", winner: true },
+                },
+                {
+
+                    player1: { id: "5", name: "Monica", winner: true },
+                    player2: { id: "6", name: "Eduardo", winner: false },
                 }
             ]
-        }
-    ];
-      /*
-      var singleElimination = {
-        "teams": [              // Matchups
-          ["Team 1", "Team 2"], // First match
-          ["Team 3", "Team 4"]  // Second match
-        ],
-        "results": [            // List of brackets (single elimination, so only one bracket)
-          [                     // List of rounds in bracket
-            [                   // First round in this bracket
-              [1, 2],           // Team 1 vs Team 2
-              [3, 4]            // Team 3 vs Team 4
-            ],
-            [                   // Second (final) round in single elimination bracket
-              [5, 6],           // Match for first place
-              [7, 8]            // Match for 3rd place
+        },
+        {
+            games: [
+                {
+
+                    player1: { id: "1", name: "Xoquiitoo", winner: false },
+                    player2: { id: "5", name: "Monica", winner: true },
+                },
             ]
-          ]
-        ]
-      }
-      window.$(()=>{
-        window.$('.mi_gracket').brackets({
-          init: singleElimination
-        })
-      })*/
+        },
+    ];
+    console.log(this.rounds)
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         if(result.fecha > Date.now()){
           let fecha = new Date(result.fecha)
           this.tiempo = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds()
         }else{
-          this.tiempo = "Cerrado"
-          this.desabilitado = true
+          this.tiempo = "Cerrado";
+          this.desabilitado = true;
+          this.rounds = result.bracket
         }
       })
       this.conexion.on("respuestaApuntarse",(result) => {
@@ -124,7 +121,7 @@
         tiempo: 0,
         relojActivo: false,
         desabilitado: false,
-        rounds: rounds
+        rounds: []
       }
     },
     updated () {
