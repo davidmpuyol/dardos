@@ -23,17 +23,42 @@
         <h2 class="text-center">Total partidas jugadas</h2>
         <p class="parrafosStats text-center">{{ datosUsuario.nPartidas }}</p>
         <h2 class="text-center">Ultimas partidas</h2>
-
+        <md-list>
+          <md-list-item v-for="(partida,index) in this.partidasOrdenadas">
+            <span class="md-list-item-text">{{$moment(partida.fecha).format("YYYY-MM-DD h:mm a")}}</span>
+            <md-button class="md-icon-button md-list-action mr-0"  v-on:click="verDetallePartida(index)">
+              <md-icon>analytics</md-icon>
+            </md-button>
+          </md-list-item>
+        </md-list>
       </section>
     </div>
     <div v-else>
       <p class="text-center">No se encontro el perfil >:( </p>
     </div>
+    <div class="modal fade modal-detalle" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header mb-2">
+            <h1 class="modal-title">Detalle</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+          </div>
+          <div class="modal-body">
+            <h2>{{jugadoresPartida[0]}} VS {{jugadoresPartida[1]}}</h2>
+            <p><strong>Ganador/a:</strong> {{ganadorDetallePartida}}</p>
+            <p><strong>Numero de partidas:</strong> {{numeroPartidasDetalle}}</p>
+           <div id="chart">
+            <apexchart ref="demoChart" type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+          </div>
+          </div>  
+        </div>
+      </div>
+    </div>
     <div class="modal fade modal-perfil" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" v-if="user.nick == nick">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header mb-2">
-            <h1 class="modal-title">Registro</h1>
+            <h1 class="modal-title">Cambiar Datos</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
           </div>
           <div class="modal-body">
@@ -108,11 +133,26 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
           this.cargado = true
         }
       })
+      this.conexion.on('respuestaPartidas',(respuesta)=>{
+        console.log("han llegado las partidas")
+        console.log(respuesta)
+        this.partidas = respuesta
+      })
+      this.conexion.on('repuestaNicksUsuarios',(respuesta)=>{
+        //Una vez han llegado los nick de la partida crea el detalle de esta
+        console.log("ha llegado el nick de los jugadores")
+        console.log(respuesta)
+        this.$set(this.jugadoresPartida,0,respuesta[0].nick)
+        this.$set(this.jugadoresPartida,1,respuesta[1].nick)
+        this.crearDetallePartida(this.indexDetalle)
+      })
+      this.conexion.emit('obtenerPartidas',this.nick)
       console.log(this.nick)
       this.conexion.emit('solicitarDatosPerfil',this.nick)
     },
     beforeDestroy(){
       this.conexion.off("respDatosPerfil")
+      this.conexion.off("respuestaPartidas")
     },
     data () {
       return {
@@ -124,7 +164,41 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         subida: false,
         nuevaImagen : "",
         pass:"",
-        textoAlert:""
+        textoAlert:"",
+        partidas:[],
+        indexDetalle:0,
+        ganadorDetallePartida: "",
+        numeroPartidasDetalle: 0,
+        jugadoresPartida : ['jugador1','jugador2'],
+        series: [{
+            name: 'Media de puntos',
+            type: 'column',
+            data: []
+          }, {
+            name: 'Rondas Ganadas',
+            type: 'line',
+            data: []
+          }],
+        chartOptions: {
+          chart: {
+            type: 'line',
+            height: 350
+          },
+          plotOptions: {
+            bar: {
+              horizontal: false,
+            }
+          },
+          dataLabels: {
+            enabled: true
+          },
+          labels: [],
+          xaxis: {
+            categories: [
+
+            ],
+          }
+        }
       }
     },
     methods: {
@@ -146,6 +220,31 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         setTimeout(() => {
           $(".alert").hide(500)
         }, 3000);
+      },
+      verDetallePartida(index){
+        //Envia el evento para obtener el nombre de los jugadores y pone el index de la partida seleccionada en la variable indexDetalle
+        this.conexion.emit("obtenerUsuarios",this.partidas[index].jugadores)
+        this.indexDetalle = index
+      },
+      crearDetallePartida(index){
+        console.log(this.partidas[index].puntuacion[0].rondasGanadas)
+        this.series[0].data = []
+        this.series[1].data = []
+        this.chartOptions.labels = []
+        this.series[0].data.push(this.partidas[index].puntuacion[0].media)
+        this.series[0].data.push(this.partidas[index].puntuacion[1].media)
+        this.series[1].data.push(this.partidas[index].puntuacion[0].rondasGanadas)
+        this.series[1].data.push(this.partidas[index].puntuacion[1].rondasGanadas)
+        this.chartOptions.labels.push(this.jugadoresPartida[0])
+        this.chartOptions.labels.push(this.jugadoresPartida[1])
+        this.partidas[index].jugadores.forEach((id,indexJugador) => {
+          if(id == this.partidas[index].ganador)
+            this.ganadorDetallePartida = this.jugadoresPartida[indexJugador]
+        });
+        this.numeroPartidasDetalle = this.partidas[index].numero_partidas
+        this.$refs.demoChart.updateOptions(this.chartOptions)
+        this.$refs.demoChart.updateSeries(this.series)
+        $('.modal-detalle').modal("show");
       }
     },
     computed: {
@@ -158,6 +257,16 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
           if(!this.subida)
             return "btn btn-primary disabled"
         return "btn btn-primary"
+      },
+      partidasOrdenadas(){
+        if(this.partidas.length > 1)
+          return this.partidas.sort(function(a,b) {
+              var x = a.fecha;
+              var y = b.fecha;
+              return x < y ? -1 : x > y ? 1 : 0;
+          });
+        else
+          return this.partidas
       }
     }
 }

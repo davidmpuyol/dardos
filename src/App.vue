@@ -7,7 +7,7 @@
             </keep-alive>
         </section>
         <section v-else>
-            <h2 class="text-center">{{this.mensajeError}}</h2>
+            <pagina-login></pagina-login>
         </section>
     </main>
 </template>
@@ -15,6 +15,7 @@
 <script>
 //import Game from './components/Game.vue'
 import paginaPrincipal from './components/paginaPrincipal.vue'
+import paginaLogin from './components/paginaLogin.vue'
 import nav1 from './components/nav.vue'
 import JQuery from 'jquery'
 let $ = JQuery
@@ -23,29 +24,28 @@ export default {
   name: 'App',
   components: {
     paginaPrincipal,
+    paginaLogin,
     nav1
   }, 
     mounted () {
-    if(this.$route.query.contrincante){
-        this.$router.push({ path: '/game', query: this.$route.query })
-    }
-    this.socket.on('respLogin',(respuesta)=>{
-        //cuando recibe respuesta del login guarda la session en el sessionStorage para poder loguearse de vuelta si recarga la pagina
-        console.log(respuesta)
-            if(respuesta){
-                sessionStorage.id = respuesta.idSession
-                this.user = respuesta
-                this.logged = true;
-                console.log(this.user)
-                $(".modal-login").modal('hide')
-            }
-    })
-    if(sessionStorage.id){
-        //Si existe un id guardado comprueba que la sesion con ese id este iniciada
-        this.socket.emit('comprobarSesion',sessionStorage.id)
-    }
-    if(!this.logged)
-       this.mensajeError = 'Tienes que estar loggeado'
+        if(this.$route.query.contrincante){
+            this.$router.push({ path: '/game', query: this.$route.query })
+        }
+        this.socket.on('respLogin',(respuesta)=>{
+            //cuando recibe respuesta del login guarda la session en el sessionStorage para poder loguearse de vuelta si recarga la pagina
+            console.log(respuesta)
+                if(respuesta){
+                    sessionStorage.id = respuesta.idSession
+                    this.user = respuesta
+                    this.logged = true;
+                    console.log(this.user)
+                    $(".modal-login").modal('hide')
+                }
+        })
+        if(sessionStorage.id){
+            //Si existe un id guardado comprueba que la sesion con ese id este iniciada
+            this.socket.emit('comprobarSesion',sessionStorage.id)
+        }
     },
     updated() {
     },

@@ -23,6 +23,7 @@ import perfil from './components/perfil.vue'
 import detalleTorneo from './components/detalleTorneo.vue'
 var moment = require('moment');
 moment().format()
+Vue.prototype.$moment  = moment
 import datePicker from 'vue-bootstrap-datetimepicker';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
@@ -30,6 +31,9 @@ Vue.use(datePicker);
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 window.$ = $;
+import VueApexCharts from 'vue-apexcharts'
+
+Vue.component('apexchart', VueApexCharts)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(VueMaterial)
