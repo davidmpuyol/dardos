@@ -48,7 +48,7 @@
             <p><strong>Ganador/a:</strong> {{ganadorDetallePartida}}</p>
             <p><strong>Numero de partidas:</strong> {{numeroPartidasDetalle}}</p>
            <div id="chart">
-            <apexchart ref="demoChart" type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+            <apexchart ref="barchart" type="line" height="350" width="100%" :key="renderGrafico" :options="chartOptions" :series="series"></apexchart>
           </div>
           </div>  
         </div>
@@ -153,6 +153,7 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
     beforeDestroy(){
       this.conexion.off("respDatosPerfil")
       this.conexion.off("respuestaPartidas")
+      this.conexion.off("repuestaNicksUsuarios")
     },
     data () {
       return {
@@ -165,6 +166,7 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         nuevaImagen : "",
         pass:"",
         textoAlert:"",
+        renderGrafico:0,
         partidas:[],
         indexDetalle:0,
         ganadorDetallePartida: "",
@@ -182,7 +184,9 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         chartOptions: {
           chart: {
             type: 'line',
-            height: 350
+            height: 350,
+            width: "100%",
+            redrawOnParentResize: true
           },
           plotOptions: {
             bar: {
@@ -228,6 +232,7 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
       },
       crearDetallePartida(index){
         console.log(this.partidas[index].puntuacion[0].rondasGanadas)
+        $('.modal-detalle').modal("show");
         this.series[0].data = []
         this.series[1].data = []
         this.chartOptions.labels = []
@@ -242,9 +247,14 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
             this.ganadorDetallePartida = this.jugadoresPartida[indexJugador]
         });
         this.numeroPartidasDetalle = this.partidas[index].numero_partidas
-        this.$refs.demoChart.updateOptions(this.chartOptions)
-        this.$refs.demoChart.updateSeries(this.series)
-        $('.modal-detalle').modal("show");
+        //this.$refs.barchart.updateOptions(this.chartOptions)
+        //this.$refs.barchart.updateSeries(this.series)
+        this.renderGrafico++
+        //Esto se hace para solventar un bug visual que hace que no se muestre el grafico la segunda vez que se abre
+        $('.modal-body').addClass("recargarModal");
+        setTimeout(() => {
+          $('.modal-body').removeClass("recargarModal");
+        }, 200);
       }
     },
     computed: {
@@ -307,6 +317,9 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
     margin-top: 10%;
     border-width: 15px 15px; /* Ancho de los bordes */
     border-radius: 10px; /* Bordes redondeados */
+  }
+  .recargarModal{
+    width: 90% !important;
   }
   @keyframes borde-animado-perfil-an{
     0% {
