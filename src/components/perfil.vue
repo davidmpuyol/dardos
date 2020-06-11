@@ -17,6 +17,10 @@
             <img src="http://localhost:3000/imgApp/derrotas.png" class="iconosPerfil" title="Derrotas">
             <p class="parrafosStats m-0">{{datosUsuario.nDerrotas}}</p>
           </div>
+          <div id="derrotasStats" class="d-flex align-items-center justify-content-around">
+            <p class="parrafosStats porcentaje m-0">%</p>
+            <p class="parrafosStats m-0">{{datosUsuario.porcentajeVictorias}}%</p>
+          </div>
         </div>
       </section>
       <section id="graficosEstadisticas" class="col-12 col-sm-8 overflow-auto sombraInsetComp p-3">
@@ -358,5 +362,9 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
   }
   .borde-animado-perfil {
   animation: borde-animado-perfil-an 750ms linear infinite;
+  }
+  .porcentaje{
+    font-size: 5em;
+    font-weight: 900;
   }
 </style>

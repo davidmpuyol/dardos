@@ -76,7 +76,7 @@
         <section class="contenedorCarousel">
           <div class="carouselTorneos">
             <div class="torneoC" id="torneo1" v-for="torneo in torneos" :style="{background:'url('+tournamentURLimg+torneo.img+')'}">
-              <md-button class="md-raised b-0" @click="$router.push({ path: 'torneos/'+torneo._id})">Ver detalles</md-button>
+              <md-button class="md-raised" @click="$router.push({ path: 'torneos/'+torneo._id})">Ver detalles</md-button>
               <h3 class="text-center mt-4 text-white"> {{ torneo.nombre }} </h3>
             </div>
           </div>

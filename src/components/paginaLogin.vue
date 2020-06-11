@@ -2,8 +2,8 @@
 
   <section class="pagina-login">
     <article class="m-5">
-      <h1 class="text-center">_________</h1>
-      <p class="text-center">Bienvenidos a ________, la web de competicion de dardos online donde podras jugar y competir con jugadores de todo el mundo y progresar como jugador profesional</p>
+      <h1 class="text-center"><b class="text-danger">DEC</b>Live</h1>
+      <p class="text-center">Bienvenidos a DECLive, la web de competicion de dardos online donde podras jugar y competir con jugadores de todo el mundo y progresar como jugador profesional</p>
     </article>
     <md-divider></md-divider>
     <article class="row m-5">

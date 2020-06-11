@@ -11,9 +11,9 @@
                 <li class="nav-item active">
                     <md-button to="/" class="nav-link">Inicio <span class="sr-only">(current)</span></md-button>
                 </li>
-                <li class="nav-item active">
+                <!-- <li class="nav-item active">
                   <md-button to="/directos" class="nav-link" >En Directo</md-button>
-                </li>
+                </li> -->
                 <li class="nav-item active">
                   <md-button to="/torneos" class="nav-link">Torneos</md-button>
                 </li>
@@ -74,7 +74,7 @@
               </div>
               <div class="d-flex align-items-center justify-content-between">
                 <button type="submit" class="btn btn-primary">Enviar</button>
-                <p id="errorLogin">{{ errorLogin }}</p>
+                <p id="errorLogin" class="text-danger">{{ errorLogin }}</p>
               </div>
             </form>
           </div>
@@ -112,7 +112,7 @@
                   <label class="form-check-label" for="terminos">Terminos y condiciones</label>
                 </div>
                 <button type="submit" class="btn btn-primary">Enviar</button>
-                <p id="registerStatus">{{ registerStatus }}</p>
+                <p id="registerStatus" class="text-danger">{{ registerStatus }}</p>
             </form>
           </div>  
         </div>
