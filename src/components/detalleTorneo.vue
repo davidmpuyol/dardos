@@ -7,7 +7,7 @@
     <article id="datos" class="container pt-5">
       <div class="d-flex align-items-center justify-content-between">
         <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
-        <md-button class="md-raised b-0" @click="this.apuntarse" >Apuntarse Torneo</md-button>
+        <md-button class="md-raised b-0" @click="this.apuntarse"  v-if="this.user.tipo_usuario >= 1">Apuntarse Torneo</md-button>
       </div>
       <p><strong>Fecha de cierre: </strong>{{tiempo}}</p>
       <div class="alert " role="alert">

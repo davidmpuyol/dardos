@@ -47,7 +47,7 @@
     name: 'user-chat',
     props: ['nick','ready','img','mensajes','tipo_usuario'],
     mounted () {
-      switch (this.tipo_usuario) {
+       switch (this.user.tipo_usuario) {
         case 0:
           this.badge = null
           break;
@@ -57,13 +57,17 @@
           break;
         case 2:
           this.badge = "grade"
-          this.badge_label = "Usuario premium"
+          this.badge_label = "Usuario Vip"
           break;
         case 3:
           this.badge = "verified_user"
           this.badge_label = "Usuario verificador"
           break;
         case 4:
+          this.badge = "visibility"
+          this.badge_label = "Usuario moderador"
+          break;
+        case 5:
           this.badge = "build"
           this.badge_label = "Usuario administrador"
           break;

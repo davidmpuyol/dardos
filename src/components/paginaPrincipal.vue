@@ -149,13 +149,17 @@
           break;
         case 2:
           this.badge = "grade"
-          this.badge_label = "Usuario premium"
+          this.badge_label = "Usuario Vip"
           break;
         case 3:
           this.badge = "verified_user"
           this.badge_label = "Usuario verificador"
           break;
         case 4:
+          this.badge = "visibility"
+          this.badge_label = "Usuario moderador"
+          break;
+        case 5:
           this.badge = "build"
           this.badge_label = "Usuario administrador"
           break;
