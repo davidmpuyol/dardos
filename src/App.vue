@@ -52,7 +52,7 @@ export default {
     data () {
         return {
             logged : false,
-            socket : io("localhost:3000"),
+            socket : io('localhost:3000'),
             mensajeError: '',
             user: {nick:'Ejemplo Nick'},
             notificaciones: {nada:{icon:'notifications_paused',text:"No hay notificaciones",ruta:"/"}}

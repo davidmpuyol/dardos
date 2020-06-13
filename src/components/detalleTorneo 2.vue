@@ -6,7 +6,7 @@
     </section>
     <article id="datos" class="container pt-5">
       <div class="d-flex align-items-center justify-content-between">
-        <p><strong>Jugadores:</strong> {{ nJugadores }} / {{datosTorneo.max_jugadores}}</p>
+        <p><strong>Jugadores:</strong> {{datosTorneo.jugadores.length}} / {{datosTorneo.max_jugadores}}</p>
         <md-button class="md-raised b-0" @click="this.apuntarse"  v-if="this.user.tipo_usuario >= 1">Apuntarse Torneo</md-button>
       </div>
       <p><strong>Fecha de cierre: </strong>{{tiempo}}</p>
@@ -43,10 +43,54 @@
     components: { Bracket },
     mounted () {
       console.log(this.relojActivo);
+      this.rounds = [
+        //Semi finals
+        {
+           games: [
+                {
+
+                    player1: { id: "1", name: "Xoquiitoo", winner: true },
+                    player2: { id: "2", name: "Alberto", winner: false },
+                },
+                {
+
+                    player1: { id: "3", name: "Pedrito", winner: false },
+                    player2: { id: "4", name: "LauraM", winner: true },
+                },
+                {
+
+                    player1: { id: "5", name: "Monica"},
+                    player2: { id: "6", name: "Eduardo"},
+                },
+            ]
+        },
+        {
+            games: [
+                {
+
+                    player1: { id: "1", name: "Xoquiitoo", winner: false },
+                    player2: { id: "4", name: "LauraM", winner: true },
+                },
+                {
+
+                    player1: { id: "5", name: "Monica", winner: true },
+                    player2: { id: "6", name: "Eduardo", winner: false },
+                }
+            ]
+        },
+        {
+            games: [
+                {
+
+                    player1: { id: "1", name: "Xoquiitoo", winner: false },
+                    player2: { id: "5", name: "Monica", winner: true },
+                },
+            ]
+        },
+    ];
+    console.log(this.rounds)
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
-        //this.torneo.jugadores = [{nick: "David"},{nick: "Pepe"},{nick: "Manuel"}]
-        console.log(result)
         this.dibujarTorneo(result);
         if(result.fecha > Date.now()){
           let fecha = new Date(result.fecha)
@@ -121,45 +165,6 @@
           $(".alert").hide(500)
         }, 3000);
       },
-      dibujarTorneo(datos){
-          let jugadores = datos.jugadores.slice();
-          //let jugadores = [{nick: "1"},{nick: "2"},{nick: "3"},{nick: "4"},{nick: "5"},{nick: "6"},{nick: "7"}];
-          let posibilidades = [4,8,16,32];
-          if(!posibilidades.includes(jugadores.length)){
-              $(posibilidades).each(function(indice, jugadoresCuadrante){
-                if(jugadores.length < jugadoresCuadrante ){
-                  while(jugadores.length != jugadoresCuadrante){
-                    jugadores.push({nick: "Bye"});
-                  }
-                  return false;
-                }
-            });
-          }
-          let nJugadores = jugadores.length;
-          let nRondas = nJugadores / 2.0;
-          let nCols = nRondas / 2;
-          let rondas = [];
-          for(let columna = 0; columna <= nCols; columna++){
-            let filas = parseInt(nRondas / (columna+1));
-            let juegosRonda = [];
-            for(let i = 0; i<filas; i++){
-              let partida = {};
-              if(jugadores.length > 0){
-                let jugador = jugadores.shift();
-                partida.player1 = { id: jugador.nick, name: jugador.nick };
-                jugador = jugadores.shift();
-                partida.player2 = { id: jugador.nick, name: jugador.nick };
-              }
-              else{
-                partida.player1 = { id: parseInt(Math.random()*100), name: " " };
-                partida.player2 = { id: parseInt(Math.random()*100), name: " " };
-              }
-              juegosRonda.push(partida);
-            }
-            rondas.push({ games: juegosRonda });
-          }
-          this.rounds = rondas;
-        },
     },
     computed: {
       cssVars() {
@@ -167,16 +172,21 @@
           '--bg-img': "url(http://localhost:3000/img/torneos/"+this.torneo.img+")",
         }
       },
-      datosTorneo() {
-        return this.torneo;
+      dibujarTorneo(datos){
+        let jugadores = datos.torneo.jugadores;
+        let nJugadores = jugadores.length;
+        let nRondas = Math.round(nJugadores/2.0);
+        for(let i = 0; i<nRondas; i++){
+          let jugador = jugadores.pop();
+        }
+        $(jugadores).each(function(indice, jugador){
+          console.log(jugador.nick);
+        })
+
+
       },
-      nJugadores(){
-        if(this.torneo.jugadores){
-          return this.torneo.jugadores.length;
-        }
-        else{
-          return 0;
-        }
+      datosTorneo() {
+        return this.torneo
       }
     },
 }
@@ -185,8 +195,23 @@
 </script>
 
 <style scoped lang="css">
-  .vtb-item-players{
-    min-width:100px!important;
+  .detalle-torneo {
+
+  }
+  canvas {  }
+  .g_gracket { width: 9999px; background-color: #fafafa; padding: 55px 15px 5px; line-height: 100%; position: relative; overflow: hidden;}
+  .g_round { float: left; margin-right: 70px; }
+  .g_game { position: relative; margin-bottom: 15px; }
+  .g_gracket h3 { margin: 0; padding: 10px 8px 8px; font-size: 18px; font-weight: normal; color: #fff}
+  .g_team { background: #3597AE; }
+  .g_team:last-child {  background: #FCB821; }
+  .g_round:last-child { margin-right: 20px; }
+  .g_winner { background: #444; }
+  .g_winner .g_team { background: none; }
+  .g_current { cursor: pointer; background: #A0B43C!important; }
+  .g_round_label { top: -5px; font-weight: normal; color: #CCC; text-align: center; font-size: 18px; }
+  .alert{
+    display: none;
   }
   #fondotorneo{
     width: 100%;

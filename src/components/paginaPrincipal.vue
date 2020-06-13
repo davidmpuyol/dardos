@@ -439,6 +439,8 @@
         console.log("llega a metodo prep")
         this.jugadorInvitar = clave;
         this.textoInvitar = "¿Quieres invitar a "+clave+"?";
+        $('#botonJugar').hide();
+        $('#botonInvitar').show();
         $(".modal-invitar").modal("show")
       },
       invitar: function(){
@@ -467,7 +469,7 @@
       invitacionAceptada: function(usuario){
         $('.modal-invitar').modal('show');
         this.jugadorInvitar = usuario;
-        this.textoInvitado = usuario+" ha aceptado la partida!";
+        this.textoInvitar = usuario+" ha aceptado la partida!";
         $('#botonJugar').show();
       },
       jugar: function(){
