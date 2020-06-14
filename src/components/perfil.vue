@@ -26,6 +26,8 @@
       <section id="graficosEstadisticas" class="col-12 col-sm-8 overflow-auto sombraInsetComp p-3">
         <h2 class="text-center">Total partidas jugadas</h2>
         <p class="parrafosStats text-center">{{ datosUsuario.nPartidas }}</p>
+        <h2 class="text-center">Media de puntos</h2>
+        <p class="parrafosStats text-center">{{ datosUsuario.media }}</p>
         <h2 class="text-center">Ultimas partidas</h2>
         <md-list>
           <md-list-item v-for="(partida,index) in this.partidasOrdenadas">

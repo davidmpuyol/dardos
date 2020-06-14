@@ -54,8 +54,8 @@
           this.tiempo = "Cerrado";
           this.desabilitado = true;
           this.rounds = result.bracket
-          if(result.bracket.length <= 1)
-          this.dibujarTorneo(result);
+          if(result.bracket.length <= 1 && result.abierto && this.user.tipo_usuario >= 4)
+            this.dibujarTorneo(result);
         }
       })
       this.conexion.on("respuestaApuntarse",(result) => {
@@ -75,7 +75,7 @@
     data () {
       return {
         torneo: {},
-        textoAlert: "Texto ejemplo",
+        textoAlert: "",
         tiempo: 0,
         relojActivo: false,
         desabilitado: false,
@@ -172,13 +172,15 @@
           console.log(nuevaFila, nuevaColumna);
           if(jugador == 1){
             this.rounds[nuevaColumna].games[nuevaFila].player1.name = player.player.name;
+            this.rounds[nuevaColumna].games[nuevaFila].player1.id = player.player.name;
           }
           else{
             this.rounds[nuevaColumna].games[nuevaFila].player2.name = player.player.name;
+            this.rounds[nuevaColumna].games[nuevaFila].player2.id = player.player.name;
           }
           this.rounds[columna].games[fila].player1.mostrarBoton = false;
           this.rounds[columna].games[fila].player2.mostrarBoton = false;
-          if(jugador == 1){
+          if(jugador != 1){
             this.rounds[columna].games[fila].player1.winner = true;
             this.rounds[columna].games[fila].player2.winner = false;
           }
