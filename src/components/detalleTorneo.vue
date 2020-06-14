@@ -16,7 +16,7 @@
       <!--<div class="my_bracket"></div>-->
       <bracket v-if="rounds != []" :rounds="rounds">
           <template style="min-width:150px" slot="player" slot-scope="player">
-            {{ player.player.name }} <button @click="ganador(player)" v-if="player.player.mostrarBoton">Win</button>
+            {{ player.player.name }} <button @click="ganador(player)" v-if="player.player.mostrarBoton && user.tipo_usuario >= 4">Win</button>
           </template>
      </bracket>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
@@ -47,7 +47,6 @@
         this.torneo = result
         //this.torneo.jugadores = [{nick: "David"},{nick: "Pepe"},{nick: "Manuel"}]
         console.log(result)
-        this.dibujarTorneo(result);
         if(result.fecha > Date.now()){
           let fecha = new Date(result.fecha)
           this.tiempo = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds()
@@ -55,6 +54,8 @@
           this.tiempo = "Cerrado";
           this.desabilitado = true;
           this.rounds = result.bracket
+          if(result.bracket.length <= 1)
+          this.dibujarTorneo(result);
         }
       })
       this.conexion.on("respuestaApuntarse",(result) => {
@@ -122,8 +123,8 @@
         }, 3000);
       },
       dibujarTorneo(datos){
-          //let jugadores = datos.jugadores.slice();
-          let jugadores = [{nick: "1"},{nick: "2"},{nick: "3"},{nick: "4"},{nick: "5"},{nick: "6"},{nick: "7"}];
+          let jugadores = datos.jugadores.slice();
+          //let jugadores = [{nick: "1"},{nick: "2"},{nick: "3"},{nick: "4"},{nick: "5"},{nick: "6"},{nick: "7"}];
           let posibilidades = [4,8,16,32];
           if(!posibilidades.includes(jugadores.length)){
               $(posibilidades).each(function(indice, jugadoresCuadrante){
@@ -159,6 +160,7 @@
             rondas.push({ columna: columna, games: juegosRonda });
           }
           this.rounds = rondas;
+          this.conexion.emit("actualizarTorneo", {id:this.torneo._id,bracket:this.rounds});
         },
         ganador(player){
           console.log(player.player.fila, player.player.columna)
@@ -190,7 +192,7 @@
             this.rounds[nuevaColumna].games[nuevaFila].player2.mostrarBoton = true;
             this.rounds[nuevaColumna].games[nuevaFila].player1.mostrarBoton = true;
           }
-          //this.socket.emit("actualizarTorneo", this.rounds);
+          this.conexion.emit("actualizarTorneo", {id:this.torneo._id,bracket:this.rounds});
         }
     },
     computed: {
