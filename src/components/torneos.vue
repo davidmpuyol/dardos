@@ -85,7 +85,6 @@
       //Los torneos tipo 2 son los torneos oficiales y los torneo tipo 1 son los de la comunidad
       this.conexion.on('resultadoTorneos',(resultado)=>{
         this.torneos = resultado
-        console.log(this.torneos)
       })
       this.conexion.emit("getTorneos");
       var uploader = new SocketIOFileUpload(this.conexion);
@@ -98,7 +97,6 @@
           event.file.meta.path = "/torneos/"+this.user.nick+numeroRandom+this.nombreTorneo.replace(/ /g,"")+extension;
           event.file.meta.nombre = this.user.nick+numeroRandom+this.nombreTorneo.replace(/ /g,"")+extension;
           this.iconoSubirArchivo = "far fa-times-circle text-danger"
-          console.log(event)
       });
       this.conexion.on("imagenSubida",(nombre)=>{
         this.nuevaImagen = nombre;
@@ -145,8 +143,6 @@
         datos.fecha = Date.parse(this.date)
         datos.tipoUsuario = this.user.tipo_usuario
         datos.maxJugadores = this.nParticipantes
-        console.log(datos)
-        console.log(typeof this.date)
         this.conexion.emit("crearTorneo", datos)
       },
       modalCrearTorneo(){

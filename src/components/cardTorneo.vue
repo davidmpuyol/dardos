@@ -16,7 +16,6 @@
     name: 'card-torneo',
     props: ["torneo"],
     mounted () {
-      console.log(this.torneo._id)
     },
     data () {
       return {

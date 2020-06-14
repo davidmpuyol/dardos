@@ -42,7 +42,6 @@
     props: ["id","conexion","user"],
     components: { Bracket },
     mounted () {
-      console.log(this.relojActivo);
       this.rounds = [
         //Semi finals
         {
@@ -88,7 +87,6 @@
             ]
         },
     ];
-    console.log(this.rounds)
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         this.dibujarTorneo(result);
@@ -180,7 +178,6 @@
           let jugador = jugadores.pop();
         }
         $(jugadores).each(function(indice, jugador){
-          console.log(jugador.nick);
         })
 
 

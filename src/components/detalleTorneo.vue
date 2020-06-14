@@ -167,13 +167,11 @@
           this.conexion.emit("actualizarTorneo", {id:this.torneo._id,bracket:this.rounds});
         },
         ganador(player){
-          console.log(player.player.fila, player.player.columna)
           let fila = player.player.fila;
           let columna = player.player.columna;
           let nuevaFila = Math.trunc(fila/2);
           let jugador = fila%2 == 0 ? 1 : 2;
           let nuevaColumna = columna+1;
-          console.log(nuevaFila, nuevaColumna);
           if(jugador == 1){
             this.rounds[nuevaColumna].games[nuevaFila].player1.name = player.player.name;
             this.rounds[nuevaColumna].games[nuevaFila].player1.id = player.player.name;

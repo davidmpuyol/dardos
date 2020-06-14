@@ -33,12 +33,10 @@ export default {
         }
         this.socket.on('respLogin',(respuesta)=>{
             //cuando recibe respuesta del login guarda la session en el sessionStorage para poder loguearse de vuelta si recarga la pagina
-            console.log(respuesta)
                 if(respuesta){
                     sessionStorage.id = respuesta.idSession
                     this.user = respuesta
                     this.logged = true;
-                    console.log(this.user)
                     $(".modal-login").modal('hide')
                 }
         })
@@ -71,8 +69,6 @@ export default {
         },
         addNotificacion:function(notificacion){
             //añade la notificacion pasada como parametro
-            console.log("entra en añadir notificacion")
-            console.log(Object.keys(notificacion)[0])
             let key = Object.keys(notificacion)[0]
             if(!this.notificaciones[key]){
                 if(this.notificaciones.nada){
