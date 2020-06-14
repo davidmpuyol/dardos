@@ -176,6 +176,16 @@
           }
           this.rounds[columna].games[fila].player1.mostrarBoton = false;
           this.rounds[columna].games[fila].player2.mostrarBoton = false;
+          if(jugador == 1){
+            this.rounds[columna].games[fila].player1.winner = true;
+            this.rounds[columna].games[fila].player2.winner = false;
+          }
+          else{
+            this.rounds[columna].games[fila].player1.winner = false;
+            this.rounds[columna].games[fila].player2.winner = true;
+          }
+
+
           if((this.rounds[nuevaColumna].games[nuevaFila].player1.name != " ") && (this.rounds[nuevaColumna].games[nuevaFila].player2.name != " ") && this.rounds.length != nuevaColumna+1){
             this.rounds[nuevaColumna].games[nuevaFila].player2.mostrarBoton = true;
             this.rounds[nuevaColumna].games[nuevaFila].player1.mostrarBoton = true;
