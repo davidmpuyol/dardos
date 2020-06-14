@@ -203,8 +203,11 @@
     },
     computed: {
       cssVars() {
-        return {
+        /*return {
           '--bg-img': "url(http://localhost:3000/img/torneos/"+this.torneo.img+")",
+        }*/
+        return {
+          '--bg-img': "url(../img/torneos/"+this.torneo.img+")",
         }
       },
       datosTorneo() {

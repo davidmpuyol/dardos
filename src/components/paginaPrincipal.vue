@@ -482,10 +482,12 @@
     computed: {
       userImage:function(){
             //Crea la url de la imagen del usuario
-            return "http://localhost:3000/img/usuarios/"+this.user.img
+            //return "http://localhost:3000/img/usuarios/"+this.user.img
+            return "./img/usuarios/"+this.user.img
         },
       tournamentURLimg (){
-        return "http://localhost:3000/img/torneos/"
+        //return "http://localhost:3000/img/torneos/"
+        return "./img/torneos/"
       }
     }
 }

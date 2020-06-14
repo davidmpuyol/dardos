@@ -267,7 +267,8 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
     computed: {
       userImage:function(){
           //Crea la url de la imagen del usuario
-          return "http://localhost:3000/img/usuarios/"+this.datosUsuario.img
+          //return "http://localhost:3000/img/usuarios/"+this.datosUsuario.img
+          return "./img/usuarios/"+this.datosUsuario.img
       },
       cambioDatosListo(){
         if(this.subeImagen)
