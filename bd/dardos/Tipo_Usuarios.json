@@ -1,0 +1,6 @@
+{ "_id" : { "$oid" : "5ea959e9f770bf3c44d2d81d" }, "id" : "0", "nombre" : "registrado" }
+{ "_id" : { "$oid" : "5ea95a0ef770bf3c44d2d81e" }, "id" : "1", "nombre" : "verificado" }
+{ "_id" : { "$oid" : "5ea95a29f770bf3c44d2d81f" }, "id" : "2", "nombre" : "premium" }
+{ "_id" : { "$oid" : "5ea95a37f770bf3c44d2d820" }, "id" : "3", "nombre" : "verificador" }
+{ "_id" : { "$oid" : "5ea95a56f770bf3c44d2d821" }, "id" : "4", "nombre" : "moderador" }
+{ "_id" : { "$oid" : "5ee3566955936c9f5dea8c73" }, "id" : "5", "nombre" : "administrador" }

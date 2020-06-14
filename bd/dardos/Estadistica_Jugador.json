@@ -1,0 +1,6 @@
+{ "_id" : { "$oid" : "5ea95f1af770bf3c44d2d822" }, "id_jugador" : { "$oid" : "5ea6afe528ae2c176453e02f" }, "media" : 40.0, "nDardos" : 0, "nDerrotas" : 1, "nPartidas" : 3, "nVictorias" : 2, "porcentajeVictorias" : 66.66 }
+{ "_id" : { "$oid" : "5eaab71f442f542fc4607548" }, "id_jugador" : { "$oid" : "5eaab71f442f542fc4607547" }, "media" : 60.0, "nDardos" : 0, "nDerrotas" : 1, "nPartidas" : 5, "nVictorias" : 4, "porcentajeVictorias" : 80, "porcertajeVictorias" : 75 }
+{ "_id" : { "$oid" : "5eabd16144c3ea0568dd98fc" }, "id_jugador" : { "$oid" : "5eabd16144c3ea0568dd98fb" }, "media" : 0, "nDardos" : 0, "nDerrotas" : 0, "nPartidas" : 0, "nVictorias" : 0, "porcentajeVictorias" : 0 }
+{ "_id" : { "$oid" : "5eb4472f826c230017e14df3" }, "id_jugador" : { "$oid" : "5eb4472e826c230017e14df2" }, "media" : "70.75", "nDardos" : 0, "nDerrotas" : 3, "nPartidas" : 3, "nVictorias" : 0, "porcentajeVictorias" : 0, "porcertajeVictorias" : 0 }
+{ "_id" : { "$oid" : "5eb50a757ea2a45f7b1f1319" }, "id_jugador" : { "$oid" : "5eb50a757ea2a45f7b1f1318" }, "media" : 0, "nDardos" : 0, "nDerrotas" : 0, "nPartidas" : 0, "nVictorias" : 0, "porcentajeVictorias" : 0 }
+{ "_id" : { "$oid" : "5ee25fbc25c7ad00170aa8ab" }, "id_jugador" : { "$oid" : "5ee25fbb25c7ad00170aa8aa" }, "media" : 0, "nDardos" : 0, "nDerrotas" : 0, "nPartidas" : 0, "nVictorias" : 0, "porcentajeVictorias" : 0 }
