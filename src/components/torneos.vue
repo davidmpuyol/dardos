@@ -42,6 +42,7 @@
                 <date-picker v-model="date" :config="options"></date-picker>
               </div>
               <div class="form-group">
+                <label for="siofu_input">Imagen torneo</label><br/>
                 <input type="file" :class="habilitarSubirFoto" id="siofu_input"/><i :class="iconoSubirArchivo"></i>
               </div>
               <div class="alert " role="alert">

@@ -7,6 +7,7 @@
     <article id="datos" class="container pt-5">
       <div class="d-flex align-items-center justify-content-between">
         <p><strong>Jugadores:</strong> {{ nJugadores }} / {{datosTorneo.max_jugadores}}</p>
+        <md-button class="md-raised b-0" @click="this.borrar"  v-if="this.user.tipo_usuario >= 2">Borrar Torneo</md-button>
         <md-button class="md-raised b-0" @click="this.apuntarse"  v-if="this.user.tipo_usuario >= 1">Apuntarse Torneo</md-button>
       </div>
       <p><strong>Fecha de cierre: </strong>{{tiempo}}</p>
@@ -111,6 +112,9 @@
         else{
           this.mostrarAlerta("La fase de ingreso esta cerrada","alert-danger")
         }
+      },
+      borrar(){
+        this.conexion.emit("borrarTorneo", this.torneo._id)
       },
       mostrarAlerta(texto,clase){
         $(".alert").removeClass("alert-success")

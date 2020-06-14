@@ -74,6 +74,7 @@
                   <input type="text" class="form-control" id="nick" name="text" placeholder="Introduce tu nuevo nick" v-model:value="modalNick" required>
                 </div>
                 <div class="form-group">
+                  <label for="siofu_input">Cambiar imagen perfil</label><br/>
                   <input type="file" class="inputTexto" id="siofu_input" /> <i :class="iconoSubirArchivo"></i>
                 </div>
                 <div class="form-group">
