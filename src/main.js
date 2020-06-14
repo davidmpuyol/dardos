@@ -18,7 +18,6 @@ window.jQuery= JQuery
 import paginaPrincipal from './components/paginaPrincipal.vue'
 import Game from './components/Game.vue'
 import torneos from './components/torneos.vue'
-import directos from './components/directos.vue'
 import perfil from './components/perfil.vue'
 import detalleTorneo from './components/detalleTorneo.vue'
 var moment = require('moment');
@@ -55,7 +54,6 @@ const routes = [
   { path: '/', component: paginaPrincipal },
   { path: '/game', component: Game, props: true },
   { path: '/torneos', component: torneos},
-  { path: '/directos', component: directos},
   { path: '/perfil/:nick', component: perfil, props: true},
   { path: '/torneos/:id', component: detalleTorneo, props: true},
 ]

@@ -77,7 +77,6 @@
       }
     },
     updated () {
-      console.log("hace update")
     },
     data () {
       return {
@@ -88,11 +87,9 @@
     },
     methods: {
       cambiarRoom: function(){
-        console.log("llega a cambiar sala del componente")
         this.$emit('cambiarSala',this.nombre)
       },
       invitarJugador: function(){
-        console.log("llega a boton de componente")
         this.$emit('invitar',this.nombre)
       }
     },

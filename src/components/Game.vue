@@ -181,7 +181,6 @@ export default {
         this.socket.emit('offer',this.pc.localDescription,this.contrincante);
       }
       catch(err){
-        console.log('Error: '+err)
       }
     })
 
@@ -208,7 +207,6 @@ export default {
     });
     //SOCKETS PARA JUGAR
     this.socket.on('comenzarPartida',(datos)=>{
-      console.log(datos);
       this.partida = datos;
       if(this.partida.turno == this.id){
         document.getElementById("inputPuntos").focus();
@@ -216,7 +214,6 @@ export default {
     })
 
     this.socket.on('ganador',(ganador)=>{
-      console.log('ganador');
       this.marcador[ganador]++;
     })
 
@@ -228,7 +225,6 @@ export default {
     })
     this.socket.on('findeljuego', (datos)=>{
       this.partida = datos;
-      console.log('Fin del juego');
       $('#modalFinDelJuego').appendTo('body').modal('show');
     })
     this.getUserMediaDevices();
@@ -291,7 +287,6 @@ export default {
         dardos: 3,
         idPartida: this.partida.idPartida,
       }
-      console.log(datos);
       this.socket.emit('tirada',datos, this.usuario, this.contrincante);
       this.input = null;
     },
@@ -331,7 +326,6 @@ export default {
       this.socket.emit('preparado',this.contrincante);
     },
     getUserMediaError(error){
-      console.error(error);
       this.gettingUserMedia = false;
     },
     enter(){

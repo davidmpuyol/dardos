@@ -43,11 +43,9 @@
     props: ["id","conexion","user"],
     components: { Bracket },
     mounted () {
-      console.log(this.relojActivo);
       this.conexion.on("resultadoTorneo",(result) => {
         this.torneo = result
         //this.torneo.jugadores = [{nick: "David"},{nick: "Pepe"},{nick: "Manuel"}]
-        console.log(result)
         if(result.fecha > Date.now()){
           let fecha = new Date(result.fecha)
           this.tiempo = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds()

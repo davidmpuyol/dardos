@@ -138,7 +138,6 @@
       this.socket.emit("getTorneosCarousel");
     },
     mounted () {
-      console.log('se monta')
       switch (this.user.tipo_usuario) {
         case 0:
           this.badge = null
@@ -171,14 +170,11 @@
       //Indica al servidor que se acaba de conectar el usuario con el nombre de este como parametro
       this.socket.emit('userConected',this.user)
       this.socket.on('user',(msg)=>{
-          console.log(msg)
       });
       this.socket.on('reenvio',(msg)=>{
             let foco = false
             //si el mensaje que recibe va a la misma room a la que se esta observando, lo añade a la lista y despues lo añade al registro de mensajes
             //del usuario que lo ha enviado
-            console.log('llegan los mensajes'+msg)
-            console.log(msg.userDest+'------'+this.roomActual)
             //Si el usuario que manda el mensaje esta puesto en el foco del chat y la room a la que va no es la general se mostrara en el chat privado
             if(msg.dest == this.roomActual && msg.usr != this.usr){
                   this.mostrarMensaje(msg,false)
@@ -204,10 +200,7 @@
                     this.notificacion['general']++
               }
             }
-            console.log(foco)
-            console.log(this.notificacion)
             if (this.$route.path != '/'){
-              console.log("emite evento")
               this.$emit('notificacion',{men:{icon:'chat',text:"Tienes mensajes nuevos",ruta:"/"}})
             }
             this.$forceUpdate()
@@ -233,7 +226,6 @@
                 }
             })
             this.$forceUpdate()
-            console.log(this.usuarios)
         })
         //socket.on('checked',clave){}
         //Por cada usuario que se ha desconectado, lo elimina de la lista.
@@ -244,17 +236,14 @@
             this.$forceUpdate()
         })
         this.socket.on('menPriv',(msg)=>{
-            console.log(msg)
         })
         //Cada vez que un usuario le da click a su chequed, manda un evento para que se cambie en los otros clientes
         this.socket.on('cambEstado',(clave) => {
         if(clave != this.user.nick)
           if(this.usuarios[clave]){
-            console.log("recibe cambiar")
             let estado = !this.usuarios[clave].ready
             delete this.usuarios[clave].ready
             this.$set(this.usuarios[clave],"ready",estado)
-            console.log(this.usuarios)
           }
           this.$forceUpdate()
         })
@@ -303,7 +292,6 @@
       }
     },
     updated() {
-      console.log(this.conexion);
     },
     methods: {
       iniciarCarousel() {
@@ -349,7 +337,6 @@
       },
       cambiarEstado: function(){
           //inicializa el primer usuario de la lista con el usuario logeado
-          console.log("hace cambiar estado");
           this.conexion.emit('checked',this.user.nick);
       },
       enviarMensaje: function(socket){
@@ -373,7 +360,6 @@
       },
       cambiarRoom: function(clave){
           //cambia la room actual por la correspondiente y carga los mensajes guardados.
-          console.log(clave)
           this.notificacion[clave] = 0
           if(clave == 'general')
               $('#tituloChat').text('Chat General')
@@ -436,7 +422,6 @@
           $('#usuarios').append(contenedorUsuario)
       },*/
       prepInvitar(clave){
-        console.log("llega a metodo prep")
         this.jugadorInvitar = clave;
         this.textoInvitar = "¿Quieres invitar a "+clave+"?";
         $('#botonJugar').hide();
@@ -444,8 +429,6 @@
         $(".modal-invitar").modal("show")
       },
       invitar: function(){
-        console.log(this.jugadorInvitar);
-        console.log(this.usr);
         this.socket.emit('invitar',this.jugadorInvitar,this.usr);
         this.textoInvitar = "Invitado, esperando respuesta";
         $('#botonInvitar').hide();
@@ -458,7 +441,6 @@
       aceptarInvitacion: function(){
         this.socket.emit('aceptarInvitacion',this.jugadorInvitar, this.usr);
         $('.modal-invitado').modal('hide');
-        console.log(this.jugadorInvitar)
         let routeData = this.$router.resolve({path: '/', query: {contrincante: this.jugadorInvitar, id: this.usr}});
         window.open(routeData.href, '_blank');
       },
@@ -474,7 +456,6 @@
       },
       jugar: function(){
         $('.modal-invitar').modal('hide');
-        console.log(this.jugadorInvitar);
         let routeData = this.$router.resolve({path: '/', query: {contrincante: this.jugadorInvitar, id: this.usr}});
         window.open(routeData.href, '_blank');
       }

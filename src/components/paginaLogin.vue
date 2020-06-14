@@ -10,8 +10,8 @@
       <img class="col-12 col-sm-6" src="../assets/imgp2.png"/>
       <div class="col-12 col-sm-6">
         <h2 class="text-center">Haz nuevos amigos... y rivales</h2>
-        <p class="text-center">Interactua con los jugadores a traves del chat principal e invitalos a jugar de una forma
-          facil e intuitiva. Solo se puede invitar a los jugadores que esten preparados y hayan puesto su boton en verde asi no te molestaran
+        <p class="text-center">Interactua con los jugadores a traves del chat principal e invítalos a jugar de una forma
+          facil e intuitiva. Solo se puede invitar a los jugadores que estén preparados y hayan puesto su boton en verde así no te molestarán
           cuando no quieras jugar.
         </p>
       </div>
@@ -21,8 +21,8 @@
       <img class="col-12 col-sm-6 order-sm-2" src="../assets/imgp1.png"/>
       <div class="col-12 col-sm-6 order-sm-1">
         <h2 class="text-center">Participa en torneos</h2>
-        <p class="text-center">Juega torneos de la comunidad y torneos oficiales donde podras demostrar tu nivel. <i>Para poder jugar torneos tendras que tener la cuenta verificada
-          por un verificador.
+        <p class="text-center">Juega torneos de la comunidad y torneos oficiales donde podrás demostrar tu nivel. <i>Para poder jugar torneos tendras que tener la cuenta verificada
+          por un usuario verificador.
         </i>
         </p>
       </div>
@@ -31,7 +31,7 @@
     <article class="row m-5">
       <img class="col-12 col-sm-6" src="../assets/imggp2.png"/>
       <div class="col-12 col-sm-6">
-        <h2 class="text-center">Controla tus estadisticas</h2>
+        <h2 class="text-center">Controla tus estadísticas</h2>
         <p class="text-center">Vuelve a revisar las estadísticas de tus partidas anteriores para analizar tu evolución como jugador.
         </p>
       </div>

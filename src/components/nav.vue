@@ -136,8 +136,6 @@
       this.conexion.on('resultadoRegistro',(result)=>{
         if(result.error){
           this.registerStatus = result.error
-          console.log(this.registerStatus)
-          console.log(result.error)
         }else{
           this.registerStatus = result.registrado
           let nick = $("#nick")[0].value = ''
@@ -156,7 +154,6 @@
       this.conexion.off("resultadoRegistro")
     },
     updated(){
-      console.log(this.alertas)
       if(!this.notificaciones.nada && !this.notificaciones.visto){
         $("#campanaNotificaciones").addClass("campana")
         this.campana="notifications_active"
@@ -186,7 +183,6 @@
         this.notificaciones.visto = true
         $("#campanaNotificaciones").removeClass("campana");
         this.campana="notifications";
-        console.log('intenta mostrar notificaciones')
         if ($('.notificaciones').is(':visible')) {
             $('.notificaciones').hide();
         } else {

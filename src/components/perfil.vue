@@ -112,7 +112,6 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
             event.file.meta.path = "/usuarios/"+this.user.nick+extension;
             event.file.meta.nombre = this.user.nick+extension;
             this.iconoSubirArchivo = "far fa-times-circle text-danger"
-            console.log(event)
         });
         this.conexion.on("imagenSubida",(nombre)=>{
           this.nuevaImagen = nombre;
@@ -134,7 +133,6 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
       }
       this.conexion.on('respDatosPerfil',(respuesta)=>{
         this.datosUsuario = respuesta
-        console.log(this.datosUsuario)
         if(respuesta.error){
           this.cargado = false
         } else {
@@ -142,14 +140,10 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         }
       })
       this.conexion.on('respuestaPartidas',(respuesta)=>{
-        console.log("han llegado las partidas")
-        console.log(respuesta)
         this.partidas = respuesta
       })
       this.conexion.on('repuestaNicksUsuarios',(respuesta)=>{
         //Una vez han llegado los nick de la partida crea el detalle de esta
-        console.log("ha llegado el nick de los jugadores")
-        console.log(respuesta)
         if(respuesta[0]._id==this.partidas[this.indexDetalle].jugadores[0]){
           this.$set(this.jugadoresPartida,0,respuesta[0].nick)
           this.$set(this.jugadoresPartida,1,respuesta[1].nick)
@@ -160,7 +154,6 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         this.crearDetallePartida(this.indexDetalle)
       })
       this.conexion.emit('obtenerPartidas',this.nick)
-      console.log(this.nick)
       this.conexion.emit('solicitarDatosPerfil',this.nick)
     },
     beforeDestroy(){
@@ -244,7 +237,6 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         this.indexDetalle = index
       },
       crearDetallePartida(index){
-        console.log(this.partidas[index].puntuacion[0].rondasGanadas)
         $('.modal-detalle').modal("show");
         this.series[0].data = []
         this.series[1].data = []
