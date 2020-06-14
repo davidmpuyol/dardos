@@ -19,7 +19,7 @@
           </div>
           <div id="derrotasStats" class="d-flex align-items-center justify-content-around">
             <p class="parrafosStats porcentaje m-0">%</p>
-            <p class="parrafosStats m-0">{{datosUsuario.porcentajeVictorias}}%</p>
+            <p class="parrafosStats m-0">{{parseFloat(datosUsuario.porcentajeVictorias).toFixed(2)}}%</p>
           </div>
         </div>
       </section>
@@ -150,8 +150,13 @@ import SocketIOFileUpload from '../../node_modules/socketio-file-upload/client.j
         //Una vez han llegado los nick de la partida crea el detalle de esta
         console.log("ha llegado el nick de los jugadores")
         console.log(respuesta)
-        this.$set(this.jugadoresPartida,0,respuesta[0].nick)
-        this.$set(this.jugadoresPartida,1,respuesta[1].nick)
+        if(respuesta[0]._id==this.partidas[this.indexDetalle].jugadores[0]){
+          this.$set(this.jugadoresPartida,0,respuesta[0].nick)
+          this.$set(this.jugadoresPartida,1,respuesta[1].nick)
+        }else{
+          this.$set(this.jugadoresPartida,0,respuesta[1].nick)
+          this.$set(this.jugadoresPartida,1,respuesta[0].nick)
+        }
         this.crearDetallePartida(this.indexDetalle)
       })
       this.conexion.emit('obtenerPartidas',this.nick)

@@ -47,7 +47,7 @@
     name: 'user-chat',
     props: ['nick','ready','img','mensajes','tipo_usuario'],
     mounted () {
-       switch (this.user.tipo_usuario) {
+       switch (this.tipo_usuario) {
         case 0:
           this.badge = null
           break;

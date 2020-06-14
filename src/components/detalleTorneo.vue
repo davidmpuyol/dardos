@@ -115,6 +115,7 @@
       },
       borrar(){
         this.conexion.emit("borrarTorneo", this.torneo._id)
+        this.$router.replace({ path: `/torneos` })
       },
       mostrarAlerta(texto,clase){
         $(".alert").removeClass("alert-success")
