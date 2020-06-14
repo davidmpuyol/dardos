@@ -15,8 +15,8 @@
       </div>
       <!--<div class="my_bracket"></div>-->
       <bracket v-if="rounds != []" :rounds="rounds">
-          <template slot="player" slot-scope="player">
-            {{ player.player.name }}
+          <template style="min-width:150px" slot="player" slot-scope="player">
+            {{ player.player.name }} <button @click="ganador(player)" v-if="player.player.mostrarBoton">Win</button>
           </template>
      </bracket>
       <md-button class="md-raised b-0" @click="this.abrirLista">Ver Jugadores</md-button>
@@ -122,8 +122,8 @@
         }, 3000);
       },
       dibujarTorneo(datos){
-          let jugadores = datos.jugadores.slice();
-          //let jugadores = [{nick: "1"},{nick: "2"},{nick: "3"},{nick: "4"},{nick: "5"},{nick: "6"},{nick: "7"}];
+          //let jugadores = datos.jugadores.slice();
+          let jugadores = [{nick: "1"},{nick: "2"},{nick: "3"},{nick: "4"},{nick: "5"},{nick: "6"},{nick: "7"}];
           let posibilidades = [4,8,16,32];
           if(!posibilidades.includes(jugadores.length)){
               $(posibilidades).each(function(indice, jugadoresCuadrante){
@@ -143,23 +143,45 @@
             let filas = parseInt(nRondas / (columna+1));
             let juegosRonda = [];
             for(let i = 0; i<filas; i++){
-              let partida = {};
+              let partida = {fila: i};
               if(jugadores.length > 0){
                 let jugador = jugadores.shift();
-                partida.player1 = { id: jugador.nick, name: jugador.nick };
+                partida.player1 = { id: jugador.nick, name: jugador.nick, fila: i, columna: columna, player: 1, mostrarBoton: true };
                 jugador = jugadores.shift();
-                partida.player2 = { id: jugador.nick, name: jugador.nick };
+                partida.player2 = { id: jugador.nick, name: jugador.nick, fila: i, columna: columna, player: 2, mostrarBoton: true };
               }
               else{
-                partida.player1 = { id: parseInt(Math.random()*100), name: " " };
-                partida.player2 = { id: parseInt(Math.random()*100), name: " " };
+                partida.player1 = { id: parseInt(Math.random()*100), name: " ", fila: i, columna: columna, player: 1, mostrarBoton: false };
+                partida.player2 = { id: parseInt(Math.random()*100), name: " ", fila: i, columna: columna, player: 2, mostrarBoton: false };
               }
               juegosRonda.push(partida);
             }
-            rondas.push({ games: juegosRonda });
+            rondas.push({ columna: columna, games: juegosRonda });
           }
           this.rounds = rondas;
         },
+        ganador(player){
+          console.log(player.player.fila, player.player.columna)
+          let fila = player.player.fila;
+          let columna = player.player.columna;
+          let nuevaFila = Math.trunc(fila/2);
+          let jugador = fila%2 == 0 ? 1 : 2;
+          let nuevaColumna = columna+1;
+          console.log(nuevaFila, nuevaColumna);
+          if(jugador == 1){
+            this.rounds[nuevaColumna].games[nuevaFila].player1.name = player.player.name;
+          }
+          else{
+            this.rounds[nuevaColumna].games[nuevaFila].player2.name = player.player.name;
+          }
+          this.rounds[columna].games[fila].player1.mostrarBoton = false;
+          this.rounds[columna].games[fila].player2.mostrarBoton = false;
+          if((this.rounds[nuevaColumna].games[nuevaFila].player1.name != " ") && (this.rounds[nuevaColumna].games[nuevaFila].player2.name != " ") && this.rounds.length != nuevaColumna+1){
+            this.rounds[nuevaColumna].games[nuevaFila].player2.mostrarBoton = true;
+            this.rounds[nuevaColumna].games[nuevaFila].player1.mostrarBoton = true;
+          }
+          //this.socket.emit("actualizarTorneo", this.rounds);
+        }
     },
     computed: {
       cssVars() {
