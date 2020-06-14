@@ -486,8 +486,7 @@
             return "./img/usuarios/"+this.user.img
         },
       tournamentURLimg (){
-        return "http://localhost:3000/img/torneos/"
-        return "http://localhost:3000/img/torneos/"
+        return "./img/torneos/"
       }
     }
 }

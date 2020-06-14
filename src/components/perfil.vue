@@ -10,11 +10,11 @@
         <md-button class="md-raised b-0" @click="this.abrirModal" v-if="user.nick == nick">Editar perfil</md-button>
         <div id="statsResumidas" class="d-flex flex-column w-75">
           <div id="victoriasStats" class="d-flex align-items-center justify-content-around">
-            <img src="http://localhost:3000/imgApp/victorias.png" class="iconosPerfil" title="Victorias">
+            <img src="../assets/victorias.png" class="iconosPerfil" title="Victorias">
             <p class="parrafosStats m-0">{{datosUsuario.nVictorias}}</p>
           </div>
           <div id="derrotasStats" class="d-flex align-items-center justify-content-around">
-            <img src="http://localhost:3000/imgApp/derrotas.png" class="iconosPerfil" title="Derrotas">
+            <img src="../assets/derrotas.png" class="iconosPerfil" title="Derrotas">
             <p class="parrafosStats m-0">{{datosUsuario.nDerrotas}}</p>
           </div>
           <div id="derrotasStats" class="d-flex align-items-center justify-content-around">
@@ -26,8 +26,9 @@
       <section id="graficosEstadisticas" class="col-12 col-sm-8 overflow-auto sombraInsetComp p-3">
         <h2 class="text-center">Total partidas jugadas</h2>
         <p class="parrafosStats text-center">{{ datosUsuario.nPartidas }}</p>
+        <!--
         <h2 class="text-center">Media de puntos</h2>
-        <p class="parrafosStats text-center">{{ datosUsuario.media }}</p>
+        <p class="parrafosStats text-center">{{ datosUsuario.media }}</p> -->
         <h2 class="text-center">Ultimas partidas</h2>
         <md-list>
           <md-list-item v-for="(partida,index) in this.partidasOrdenadas">
